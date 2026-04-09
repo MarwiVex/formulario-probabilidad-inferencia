@@ -1,0 +1,1020 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{latexsym, marvosym}
+\usepackage{pifont}
+\usepackage{lscape}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[bottom]{footmisc}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{pdfpages}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\setlist[description]{leftmargin=0pt}
+\usepackage{xfrac}
+\usepackage[pdftex,
+            pdfauthor={William Chen, adapted},
+            pdftitle={Probability and Inference Cheat Sheet},
+            pdfsubject={Comprehensive mathematical probability and statistics reference},
+            pdfkeywords={probability} {statistics} {cheat sheet} {math}
+            ]{hyperref}
+\usepackage[
+            open,
+            openlevel=2
+            ]{bookmark}
+\usepackage{relsize}
+\usepackage{rotating}
+\usepackage{centernot} 
+\usetikzlibrary{shapes, arrows, positioning}
+ \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+    \def\independenT#1#2{\mathrel{\setbox0\hbox{$#1#2$}%
+    \copy0\kern-\wd0\mkern4mu\box0}}            
+\newcommand{\noin}{\noindent}   
+\newcommand{\logit}{\textrm{logit}} 
+\newcommand{\var}{\textrm{Var}}
+\newcommand{\cov}{\textrm{Cov}} 
+\newcommand{\corr}{\textrm{Corr}} 
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Bern}{\textrm{Bern}}
+\newcommand{\Bin}{\textrm{Bin}}
+\newcommand{\Beta}{\textrm{Beta}}
+\newcommand{\Gam}{\textrm{Gamma}}
+\newcommand{\Expo}{\textrm{Expo}}
+\newcommand{\Pois}{\textrm{Pois}}
+\newcommand{\Unif}{\textrm{Unif}}
+\newcommand{\Geom}{\textrm{Geom}}
+\newcommand{\NBin}{\textrm{NBin}}
+\newcommand{\Hypergeometric}{\textrm{HGeom}}
+\newcommand{\HGeom}{\textrm{HGeom}}
+\newcommand{\Mult}{\textrm{Mult}}
+
+\geometry{top=.4in,left=.2in,right=.2in,bottom=.4in}
+
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+{\color{blue}\normalfont\large\bfseries}
+{\color{blue}\thesection}{1em}{}
+\titleformat{\subsection}
+{\color{cyan}\normalfont\normalsize\bfseries}
+{\color{cyan}\thesection}{1em}{}
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols*}{3}
+
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+    {\color{blue} \Large{\textbf{Probability and Inference Cheat Sheet}}} \\
+\end{center}
+
+\scriptsize
+Material originally compiled by William Chen and Joe Blitzstein. Substantially expanded with excerpts from the Statistics Cookbook by Matthias Vallentin, translated and adapted maintaining mathematical rigor. By Roberto León Landeros. This work is distributed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0).
+
+\begin{center}
+    Last updated \today
+\end{center}
+
+\section{Counting and Combinatorics}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Multiplication Rule} 
+\begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[width=2in]{figures/icecream.pdf}
+\end{minipage}
+        
+For a compound experiment with multiple components, if the $i$-th component has $n_i$ possible outcomes, the total number of outcomes for the full experiment of $r$ components is the product of the individual cardinalities:
+\[ N = n_1 \times n_2 \times \dots \times n_r = \prod_{i=1}^{r} n_i \]
+ 
+\subsection{Sampling Table}
+\begin{minipage}{\linewidth}
+        \centering
+         \includegraphics[width=1.2in]{figures/jar.pdf}
+\end{minipage}
+
+Options for drawing a sample of size $n$ from a population $S = \{1,\dots,s\}$ of size $s$:
+\begin{center}
+    % Reducimos el espacio vertical extra para compensar las fórmulas más grandes
+    \setlength{\extrarowheight}{2pt} 
+    
+    % Mantenemos el scalebox para que la tabla quepa en la columna, 
+    % pero ahora el contenido interno será más grande.
+    \scalebox{0.75}{
+    \begin{tabular}{|c|c|c|}
+    \hline
+        \textbf{Sample $n$ from pop. $s$} & \textbf{With Replacement} & \textbf{Without Replacement} \\ \hline
+        % Usamos \displaystyle antes de cada fórmula para agrandarla
+        \textbf{Ordered} & $\displaystyle s^n$ & $\displaystyle (s)_n = \frac{s!}{(s-n)!}$ \\ \hline
+        \textbf{Unordered} & $\displaystyle \binom{n+s-1}{s-1}$ & $\displaystyle \binom{s}{n} = \frac{s!}{n!(s-n)!}$ \\ \hline
+    \end{tabular}
+    }
+\end{center}
+
+\subsection{Partitions and Allocations (Balls in Bins)}
+\textbf{Stirling Numbers of the Second Kind} $\left\{\begin{matrix}n\\k\end{matrix}\right\}$: Ways to partition $n$ elements into $k$ non-empty subsets. $\left\{\begin{matrix}n\\k\end{matrix}\right\} = k\left\{\begin{matrix}n-1\\k\end{matrix}\right\} + \left\{\begin{matrix}n-1\\k-1\end{matrix}\right\}$.\\
+\textbf{Allocation of $n$ balls into $m$ bins:}
+\begin{center}
+\scalebox{0.85}{
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Balls} & \textbf{Bins} & \textbf{Any allocation} & \textbf{Sampling w/o repl.} (Inj.) \\ \hline
+Distinct & Distinct & $m^n$ & $\frac{m!}{(m-n)!}$ \\ \hline
+Indist. & Distinct & $\binom{m+n-1}{n}$ & $\binom{m}{n}$ \\ \hline
+Distinct & Indist. & $\sum_{k=1}^m \left\{\begin{matrix}n\\k\end{matrix}\right\}$ & 1 if $m \ge n$ \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\subsection{Additional Definitions of Probability} 
+\begin{description}
+    \item[Classical (Laplace)] If all elements are equiprobable: $P(A) = \frac{\text{favorable outcomes}}{\text{total outcomes}} = \frac{\#A}{\#\Omega}$
+    \item[Relative Frequency] $h_n(A) = \frac{m}{n}$ (absolute frequency over total).
+    \item[Geometric] $P(A) = \frac{m(A)}{m(\Omega)}$, where $m$ denotes the geometric measure (length, area, or volume).
+\end{description}
+
+\subsection{Algebraic Expansions}
+\begin{description}
+    \item[Binomial Theorem:] $(a+b)^n = \sum_{k=0}^n \binom{n}{k} a^k b^{n-k}$
+    \item[Multinomial Coefficient:] $\binom{n}{n_1, n_2, \dots, n_k} = \frac{n!}{n_1! n_2! \dots n_k!}$
+    \item[Multinomial Theorem:] $(a_1 + \dots + a_m)^n = \sum_{n_1+\dots+n_m = n} \binom{n}{n_1,\dots,n_m} a_1^{n_1} \dots a_m^{n_m}$
+\end{description}
+
+
+\section{Theoretical Foundations}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Set Operations and Algebra}
+\begin{description}
+    \item[De Morgan's Laws (Duality)] $(A \cup B)^c = A^c \cap B^c$ \quad and \quad $(A \cap B)^c = A^c \cup B^c$
+    \item[Set Difference] $A \setminus B = A \cap B^c$
+    \item[Symmetric Difference] $A \triangle B = (A \setminus B) \cup (B \setminus A) = (A \cup B) \setminus (A \cap B)$
+    \item[Union Identities] $A \cup B = $ $A \cup (B \cap A^c) = (A \cap B^c) \cup (B \cap A^c) \cup (A \cap B)$
+    \item[Distributive Properties] 
+    $(A \cup B) \cap C = (A \cap C) \cup (B \cap C)$ \\
+    $(A \cap B) \cup C = (A \cup C) \cap (B \cup C)$
+\end{description}
+
+\subsection{Kolmogorov's Axiomatic System}
+Let $P$ be a function over a $\sigma$-algebra $\mathfrak{F}$:
+\begin{enumerate}
+    \item $\Omega \in \mathfrak{F}$
+    \item $A \in \mathfrak{F} \implies $ $A^c \in \mathfrak{F}$
+    \item $\bigcup_{i=1}^\infty A_i \in \mathfrak{F}$
+\end{enumerate}
+The axioms of the probability measure $P$ are:
+\begin{description}
+    \item[Axiom I (Non-negativity)] $0 \leq P(A) \leq 1$
+    \item[Axiom II (Certainty)] $P(\Omega) = 1$
+    \item[Axiom III (Finite additivity)] If $A \cap B = \emptyset$, $P(A \cup B) = P(A) + P(B)$
+    \item[Axiom IV ($\sigma$-additivity)] For disjoint $\{A_i\}_{i=1}^\infty$, $P(\bigcup_{i=1}^\infty A_i) = \sum_{i=1}^\infty P(A_i)$
+\end{description}
+
+\subsection{Basic Rules and Theorems}
+\begin{description}
+    \item[Impossibility] $P(\emptyset) = 0$
+    \item[Complement] $P(A^c) = 1 - P(A)$
+    \item[Monotonicity] If $A \subset B \implies P(A) \leq P(B)$
+    \item[Difference] If $A \subset B \implies P(B \setminus A) = P(B) - P(A)$
+    \item[General Subtraction] $P(A \setminus B) = P(A) - P(A \cap B)$
+    \item[Boole's Inequality] $P(\bigcup_{i=1}^n A_i) \leq \sum_{i=1}^n P(A_i)$
+    \item[Bonferroni's Ineq.] $P(\bigcup_{i=1}^n A_i) \geq \sum_{i=1}^n P(A_i) - \sum_{i<j} P(A_i \cap A_j)$
+    \item[Continuity] If $A_n \uparrow A \implies P(A) = \lim_{n \to \infty} P(A_n)$
+\end{description}
+
+
+\section{Conditional Probability}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Independence}
+\begin{description}
+    \item[Independent Events] $A$ and $B$ are independent if knowing that $A$ occurred provides no information about $B$. Equivalencies:
+           \begin{align*} 
+            P(A \cap B) &= P(A)P(B) \\
+            P(A | B) &= P(A)\\
+            P(B | A) &= P(B)
+           \end{align*}
+    \item[Conditional Independence] $A$ and $B$ are conditionally independent given $C$ if $P(A \cap B | C) = P(A | C)P(B | C)$. This neither implies absolute independence, nor vice versa.
+\end{description}
+
+\subsection{Joint, Marginal, and Conditional Probabilities}
+\begin{description}
+    \item[Joint Probability] $P(A \cap B)$ or $P(A, B)$ -- Probability that both $A$ and $B$ occur.
+    \item[Marginal Probability] $P(A)$ -- Unconditional probability.
+    \item[Conditional Probability] $P(A | B) = \frac{P(A \cap B)}{P(B)}$ (for $P(B)>0$). It satisfies all of Kolmogorov's axioms.
+\end{description}
+
+\subsection{Probability of Intersections and Unions}
+\textbf{Chain Rule (Multiplication)}
+\begin{align*} 
+    P(A_1 \cap \dots \cap A_n) &= P(A_1)P(A_2|A_1)\dots P(A_n|A_1 \dots A_{n-1}) \\
+    P\Big(\bigcap_{i=1}^n A_i\Big) &= \prod_{i=1}^n P\Big(A_i \Big| \bigcap_{j=1}^{i-1} A_j\Big)
+\end{align*}
+
+\textbf{Inclusion-Exclusion (Unions)}
+For $2$ events: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$ \\
+For $n$ events: $P(\bigcup_{i=1}^n A_i) = \sum_{r=1}^n (-1)^{r-1} S_r^n$ \\
+Where $S_r^n = \sum_{1 \leq i_1 < \dots < i_r \leq n} P(A_{i_1} \cap \dots \cap A_{i_r})$
+
+\subsection{Simpson's Paradox}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/SimpsonsParadox.pdf}
+        \end{minipage}
+It is analytically possible to observe:
+\[P(A| B,C) < P(A| B^c, C) \text{ and } P(A| B, C^c) < P(A | B^c, C^c)\]
+\[ \text{but globally: } P(A| B) > P(A | B^c).\]
+
+\subsection{Law of Total Probability (LOTP)}
+Let $\{B_1, \dots, B_n\}$ be a partition of the sample space (mutually disjoint, union equal to $\Omega$).
+\begin{align*} 
+    P(A) &= P(A | B_1)P(B_1) + \dots + P(A | B_n)P(B_n) = \sum_{i=1}^n P(A | B_i)P(B_i) \\
+    P(A) &= P(A \cap B_1) + \dots + P(A \cap B_n) = \sum_{i=1}^n P(A \cap B_i)
+\end{align*} 
+For \textbf{LOTP with extra conditioning on $C$}:
+\begin{align*} 
+    P(A| C) &= \sum_{i=1}^n P(A | B_i, C)P(B_i | C)
+\end{align*} 
+
+\subsection{Bayes' Theorem}
+\textbf{Conditional Inversion:}
+         \[P(A| B)  = \frac{P(B| A)P(A)}{P(B)} = \frac{P(B|A)P(A)}{\sum_{i=1}^n P(B|A_i)P(A_i)}\]
+With additional conditioning:
+         \[P(A| B, C) = \frac{P(B| A, C)P(A | C)}{P(B | C)}\]
+\textbf{Odds Form of Bayes' Rule:}
+\[\frac{P(A| B)}{P(A^c| B)} = \frac{P(B| A)}{P(B| A^c)}\frac{P(A)}{P(A^c)}\]
+
+\section{Discrete Random Variables}\smallskip \hrule height 2pt \smallskip
+
+\subsection{PMF, CDF, and Independence}
+\begin{description}
+\item[Probability Mass Function (PMF)] 
+Yields the probability that a \emph{discrete} R.V. takes a specific value $x$.
+\[ p_X(x) = P(X=x) \]
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/Binpmf.pdf}
+        \end{minipage}
+Conditions: $p_X(x) \geq 0$ and $\sum_x p_X(x) = 1$.
+
+\item[Cumulative Distribution Function (CDF)] 
+Probability that an R.V. is less than or equal to $x$.
+\[F_X(x) = P(X \leq x)\]
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/Bincdf.pdf}
+        \end{minipage}
+Monotonically increasing, right-continuous, $\lim_{x \to -\infty} F_X(x) = 0$, $\lim_{x \to \infty} F_X(x) = 1$.
+
+\item[Independence of R.V.s] R.V.s $X$ and $Y$ are independent if knowing the value of one provides no information about the other. For discrete variables, for all $x,y$: 
+$P(X=x, Y=y) = P(X = x)P(Y = y)$
+\end{description}
+
+\section{Expected Value and Indicators}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Expectation and Linearity}
+\begin{description}
+\item[Expectation] Central measure or probability-weighted average of the distribution. For discrete $X$ with support $\{x_1, x_2, \dots \}$:
+\[E(X) = \sum_{i} x_i P(X=x_i)\]
+
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/linearity.pdf}
+        \end{minipage}
+
+\item[Linearity] For R.V.s $X,Y$ and constants $a,b,c$:
+\[E(aX + bY + c) = aE(X) + bE(Y) + c \]
+
+\item[Identically distributed] If $X$ and $Y$ share the same distribution, $E(X)=E(Y)$ and $E(g(X)) = E(g(Y))$.
+
+\item[Conditional Expected Value] Weighted expectation over a conditional event $A$:
+\[ E(X | A) = \sum_{x} x P(X=x | A)\]
+\end{description}
+
+\subsection{Indicator Variables}
+Takes the value 1 if the event occurs, 0 otherwise. 
+\[ I_A = \begin{cases} 1 & \text{if } A \text{ occurs} \\ 0 & \text{if } A^c \text{ occurs} \end{cases} \]
+Properties: $I_A^2 = I_A$, $I_A I_B = I_{A \cap B}$, $I_{A \cup B} = I_A + I_B - I_A I_B$.
+Distribution: $I_A \sim \Bern(p)$ with $p = P(A)$. \\
+\textbf{Fundamental Bridge:} $E(I_A) = P(A)$. \\
+\textbf{Variance and Covariance:} $\var(I_A) = P(A)(1-P(A))$, $\cov(I_A, I_B) = P(A \cap B) - P(A)P(B)$.
+
+\subsection{Variance and Standard Deviation}
+\[\var(X) = E \left((X - E(X))^2\right) = E(X^2) - (E(X))^2\]
+\[\textrm{SD}(X) = \sqrt{\var(X)}\]
+
+
+\section{Continuous R.V.s, LOTUS, UoU}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Continuous Random Variables (CRVs)}
+\begin{description}
+\item[Probability over intervals] 
+\[P(a \leq X \leq b) = F_X(b) - F_X(a)\]
+For the Standard Normal $Z \sim \N(0,1)$, the probability is $\Phi(b) - \Phi(a)$.
+
+\item[Probability Density Function (PDF)] The derivative of the CDF.
+\[ f(x) = \frac{d}{dx} F(x) \implies F(x) = \int_{-\infty}^x f(t)dt \]
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/Logisticpdfcdf.pdf}
+        \end{minipage}
+Must integrate to 1 and be non-negative.
+
+\item[Expected Value] Analogous to the discrete case but with an integral.
+\[E(X) = \int_{-\infty}^\infty x f(x) dx \]
+\end{description}
+
+\label{lotus}
+\subsection{LOTUS (Law of the Unconscious Statistician)}
+Facilitates finding the expected value of a function dependent on $X$, $g(X)$, by operating over the PDF or PMF of $X$.
+Discrete: $E(g(X)) = \sum_x g(x)P(X=x)$
+Continuous: $E(g(X)) = \int_{-\infty}^\infty g(x)f(x)dx$
+
+\subsection{Universality of the Uniform (UoU)} 
+Evaluating a continuous R.V. in its own CDF results in a Uniform distribution. If $X$ has CDF $F$, then $F(X) \sim \Unif(0,1)$. Conversely, if $U \sim \Unif(0,1)$, then $F^{-1}(U)$ has distribution $F$. This facilitates computational simulation of R.V.s.
+
+
+\section{Moments and Generating Functions}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Moments}
+Describe the shape of the distribution. For standardized R.V. $Z = \frac{X-\mu}{\sigma}$:
+\begin{description}
+        \item[Mean (1st moment)] $E(X) = \mu_1 $
+        \item[Variance (2nd central)] $\var(X) = \mu_2 - \mu_1^2$
+        \item[Skewness] $\textrm{Skew}(X) = E(Z^3)$
+        \item[Kurtosis] $\textrm{Kurt}(X) = E(Z^4) - 3$
+\end{description}
+
+\subsection{Moment Generating Function (MGF)}
+\begin{description}
+    \item[MGF] Defined as $M_X(t) = E(e^{tX})$.
+    \item[Obtaining Moments] The $k$-th derivative evaluated at $0$ yields the $k$-th moment: $\mu_k = E(X^k) = M_X^{(k)}(0)$.
+    Based on Taylor expansion: $M_X(t) = \sum_{k=0}^\infty \frac{E(X^k)t^k}{k!}$.
+    \item[Linear Transformation] For $Y = aX + b$, $M_Y(t) = e^{bt}M_X(at)$.
+    \item[Uniqueness] The MGF uniquely determines the probability distribution (if it exists).
+    \item[Sum of Independent R.V.s] If $X \independent Y$:
+    $M_{X+Y}(t) = M_X(t) M_Y(t)$
+\end{description}
+
+
+\section{Joint Density and Mass Functions}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Joint Distributions}
+\textbf{Joint CDF:} $F_{X,Y}(x,y)=P(X \leq x, Y \leq y)$ \\
+\textbf{Joint PMF:} $p_{X,Y}(x,y) = P(X=x,Y=y)$ \\
+\textbf{Joint PDF:} $f_{X,Y}(x,y) = \frac{\partial^2}{\partial x \partial y} F_{X,Y}(x,y)$
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.0in]{figures/jointPDF.pdf}
+        \end{minipage}
+        
+\subsection{Conditional Distributions and Bayes' Rule}
+For discrete: $P(Y=y|X=x) = \frac{P(X=x, Y=y)}{P(X=x)} = \frac{P(X=x|Y=y)P(Y=y)}{P(X=x)} \\
+For continuous: $f_{Y|X}(y|x) = \frac{f_{X,Y}(x, y)}{f_X(x)} = \frac{f_{X|Y}(x|y)f_Y(y)}{f_X(x)}$
+
+\subsection{Marginal Distributions}
+Obtaining an isolated distribution by integrating/summing out the unwanted variable.
+Discrete: $P(X = x) = \sum_y P(X=x, Y=y)$ \\
+Continuous: $f_X(x) = \int_{-\infty}^\infty f_{X, Y}(x, y) dy$
+
+\subsection{Multivariate LOTUS}
+Discrete: $E(g(X, Y)) = \sum_x\sum_y g(x, y)P(X=x, Y=y)$ \\
+Continuous: $E(g(X, Y)) = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty} g(x, y)f_{X,Y}(x, y)dxdy$
+
+
+\section{Covariance and Transformations}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Covariance and Correlation}
+\begin{description}
+\item [Covariance] Multivariate analog of variance.
+    \[\cov(X, Y) = E((X - E(X))(Y - E(Y))) = E(XY) - E(X)E(Y)\]
+\item [Correlation] Standardized covariance $[-1, 1]$.
+    \[\corr(X, Y) = \frac{\cov(X, Y)}{\sqrt{\var(X)\var(Y)}} \]
+\item [Independence] $X \independent Y \implies \cov(X, Y) = 0$. The converse is generally false (with exceptions like the Multivariate Normal).
+\item [Variance of Sums] 
+    $\var(X + Y) = \var(X) + \var(Y) + 2\cov(X, Y)$ \\
+    For a generic sum with identically related variables (symmetry):
+    \[\var\Big(\sum_{i=1}^n X_i\Big) = \sum_{i=1}^n \var(X_i) + 2\sum_{i < j} \cov(X_i, X_j)\]
+\item [Bilinear Properties] 
+    $\cov(aX+c, bY+d) = ab\cov(X, Y)$ \\
+    $\cov(X+Y, Z+W) = \cov(X,Z) + \cov(X,W) + \cov(Y,Z) + \cov(Y,W)$
+\end{description}
+
+\subsection{1D Transformation}
+For $Y = g(X)$ where $g$ is monotonic and differentiable:
+\[f_Y(y) = f_X(g^{-1}(y)) \left| \frac{d}{dy} g^{-1}(y) \right|\]
+
+\subsection{Multivariate Transformations}
+For R.V. $(U,V)$ with a joint PDF and $(X, Y) = g(U, V)$, the determinant of the Jacobian matrix is fundamental to change the density domain.
+$$  J = \begin{pmatrix}   
+              \frac{\partial u}{\partial x} &  \frac{\partial u}{\partial y} \\
+           \frac{\partial v}{\partial x} & \frac{\partial v}{\partial y}   \\
+        \end{pmatrix}$$
+\[f_{X,Y}(x, y) = f_{U,V}(u,v) | \det(J) | \]
+
+\label{convolutions}
+\subsection{Convolutions}
+Integral for the PDF of the sum of two independent continuous variables $X,Y$:
+\[f_{X+Y}(t)=\int_{-\infty}^\infty f_X(x)f_Y(t-x)dx\]
+
+
+\section{Poisson Process}\smallskip \hrule height 2pt \smallskip
+
+\begin{description}
+\item[Definition] Event rates modeled in temporal intervals $\lambda$.
+\begin{enumerate}
+    \item Events in an interval $t$ follow $\Pois(\lambda t)$.
+    \item Increments in disjoint intervals are independent.
+\end{enumerate}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/pp.pdf}
+        \end{minipage}
+        
+\item[Superposition and Thinning]
+    \begin{enumerate}
+        \item \textbf{Superposition:} If $N_1(t) \sim PP(\lambda_1)$ and $N_2(t) \sim PP(\lambda_2)$ are independent, then $N_1(t)+N_2(t) \sim PP(\lambda_1+\lambda_2)$.
+        \item \textbf{Thinning:} If $N \sim \text{Pois}(\lambda)$ and each event is classified as type $i$ with prob $p_i$, then the counts $N_i$ are independent and $N_i \sim \text{Pois}(\lambda p_i)$.
+    \end{enumerate}
+        
+\item[Count-Time Duality] The time until the first event follows an Exponential distribution $\Expo(\lambda)$, since the event of waiting $t$ hours is equivalent to observing 0 arrivals in $t$ hours ($N_t = 0$). Inter-arrival times are i.i.d. $\Expo(\lambda)$.
+\end{description}
+
+
+\section{Order Statistics}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Definition] Let $X_1, \dots, X_n$ be i.i.d. random variables. Sorting them from smallest to largest, $X_{(i)}$ denotes the $i$-th order statistic. The minimum is $X_{(1)}$ and the maximum $X_{(n)}$. They usually exhibit statistical dependence.
+    \item[Distribution] The CDF and PDF of element $X_{(i)}$ are given by:
+        \[F_{X_{(i)}}(x) = \sum_{k=i}^n \binom{n}{k} F(x)^k(1 - F(x))^{n - k}\]
+    \[f_{X_{(i)}}(x) = n\binom{n - 1}{i - 1}F(x)^{i-1}(1 - F(x))^{n-i}f(x)\]
+    \item[Uniform Order Statistics] The $j$-th component of $U_1,\dots,U_n \sim \Unif(0,1)$ distributes as $U_{(j)} \sim \Beta(j, n - j + 1)$.
+\end{description}
+
+
+\section{Conditional Expectation}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Conditioned on an Event] Expectation given event $A$. Results in a deterministic scalar value.
+\end{description}
+        \scalebox{0.85}{
+                        \setlength{\extrarowheight}{7pt}
+            \begin{tabular}{|c|c|} \hline
+                  \textbf{Discrete} & \textbf{Continuous} \\
+            \hline
+            $E(Y) = \sum_y y P(Y=y)$ & $E(Y) =\int_{-\infty}^\infty y f_Y(y)dy$ \\
+            $E(Y|A) = \sum_y y P(Y=y|A)$ & $E(Y|A) = \int_{-\infty}^\infty y f(y|A)dy$ \\ 
+            \hline
+            \end{tabular}
+        }
+        \medskip
+\begin{description}
+    \item[Conditioned on an R.V.] The term $E(Y|X)$ is a mathematical function of the random variable $X$. It only collapses to a constant if they are independent ($X \independent Y$).
+        
+    \item[Analytical Properties] \quad
+    \begin{enumerate}
+        \item $E(Y|X) = E(Y)$ if $X \independent Y$.
+        \item $E(h(X)W|X) = h(X)E(W|X)$ (pulling out known scalars).
+        \item $E(E(Y|X)) = E(Y)$ (Adam's Law).
+    \end{enumerate}
+
+    \item[Adam's Law (Law of Total Expectation)] 
+    \[ E(Y) = \sum_{i=1}^n E(Y|A_i)P(A_i) \]
+
+    \item[Eve's Law (Law of Total Variance)] \quad
+    \[\var(Y) = E(\var(Y|X)) + \var(E(Y|X))\]
+\end{description}
+
+
+\section{Classical Limit Theorems}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Types of Convergence}
+\begin{description}
+    \item[In Distribution (Law)] $X_n \xrightarrow{D} X \iff \lim_{n \to \infty} F_n(t) = F(t)$
+    \item[In Probability] $X_n \xrightarrow{P} X \iff \lim_{n \to \infty} P(|X_n - X| > \varepsilon) = 0$
+    \item[Almost Surely (a.s.)] $X_n \xrightarrow{a.s.} X \iff P(\lim_{n \to \infty} X_n = X) = 1$
+    \item[In Mean Square ($L_2$)] $X_n \xrightarrow{qm} X \iff \lim_{n \to \infty} E((X_n - X)^2) = 0$
+\end{description}
+\textbf{Hierarchy:} $qm \implies P \implies D$ and $a.s. \implies P$.
+
+\subsection{Slutsky's Theorem}
+If $X_n \xrightarrow{D} X$ and $Y_n \xrightarrow{P} c$:
+\[ X_n + Y_n \xrightarrow{D} X + c \quad \text{and} \quad X_n Y_n \xrightarrow{D} cX \]
+
+\subsection{Law of Large Numbers (LLN)}
+For a large set of i.i.d. R.V.s $X_i$ with mean $\mu$, the sample mean $\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$ converges directly to $\mu$ as $n \to \infty$ (in probability for WLLN and almost surely for SLLN).
+
+\subsection{Central Limit Theorem (CLT)}
+Sums and sample averages of R.V.s converge asymptotically to the Normal distribution, regardless of their original distribution.
+\[Y = \sum X_i \dot{\,\sim\,} \N(n\mu_X, n\sigma^2_X)\]
+\[ \bar{X}_n \dot{\,\sim\,} \N(\mu_X, \sigma^2_X/n) \]
+Asymptotic Standardization:
+\[ \frac{\sqrt{n} (\bar{X}_n - \mu_X)}{\sigma_X} \xrightarrow{D} \N(0, 1)\]
+
+
+\section{Statistical Inference}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Point Estimation and Properties}
+\begin{description}
+    \item[Bias] $\text{Bias}(\hat{\theta}_n) = E(\hat{\theta}_n) - \theta$.
+    \item[Consistency] $\hat{\theta}_n \xrightarrow{P} \theta$.
+    \item[Mean Squared Error (MSE)] $E((\hat{\theta}_n - \theta)^2) = \text{Bias}^2 + \var(\hat{\theta}_n)$.
+    \item[Sufficiency] $T(X)$ is sufficient if the conditional distribution of the data given $T$ does not depend on $\theta$.
+    \item[Factorization Theorem (Fisher-Neyman)] $T(X)$ is sufficient for $\theta \iff f(x|\theta) = g(T(x), \theta)h(x)$.
+    \item[Asymptotic Efficiency] An estimator is efficient if its variance achieves the Cramér-Rao Lower Bound.
+    \item[Rao-Blackwell Improvement] Let $\hat{\theta}$ be an unbiased estimator and $T$ a sufficient statistic. Then $\eta = E(\hat{\theta}|T)$ is an unbiased estimator with $\var(\eta) \leq \var(\hat{\theta})$.
+\end{description}
+
+\subsection{Fisher Information and Lower Bound}
+\begin{description}
+    \item[Fisher Information] $I(\theta) = -E\left(\frac{\partial^2}{\partial\theta^2}\log f(X ; \theta)\right)$.
+    \item[Cramér-Rao Lower Bound] For any unbiased estimator $W(X)$ of $\theta$: 
+    \[\var(W) \geq \frac{1}{nI(\theta)}\]
+\end{description}
+
+\subsection{Confidence Intervals (CI)}
+\begin{description}
+    \item[Mean (known var)] $\bar{X} \pm z_{\alpha/2} \frac{\sigma}{\sqrt{n}}$
+    \item[Mean (unknown var)] $\bar{X} \pm t_{\alpha/2, n-1} \frac{s}{\sqrt{n}}$
+    \item[Proportion] $\hat{p} \pm z_{\alpha/2} \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$
+\end{description}
+
+\subsection{Method of Moments (MoM)}
+Equate theoretical population moments $\alpha_j(\theta) = E(X^j)$ with sample moments $\hat{\alpha}_j = \frac{1}{n}\sum X_i^j$ and solve for $\theta$.
+
+\subsection{Maximum Likelihood Estimation (MLE)}
+\begin{description}
+    \item[Likelihood Function] $L(\theta) = \prod_{i=1}^n f(X_i ; \theta)$
+    \item[Log-Likelihood] $\ell(\theta) = \log L(\theta) = \sum_{i=1}^n \log f(X_i ; \theta)$
+    \item[MLE Estimator] $\hat{\theta}_n = \sup_\theta L(\theta)$.
+    \item[Asymptotic Properties] Under regularity conditions: $\hat{\theta}_{MLE} \xrightarrow{D} \mathcal{N}(\theta, \frac{1}{nI(\theta)})$. This connects MLE with the Cramér-Rao Bound and explains why it is "efficient".
+    \item[Fisher Information] $I(\theta) = \var\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right) = -E\left(\frac{\partial^2}{\partial\theta^2}\log f(X;\theta)\right)$. For the entire sample: $I_n(\theta) = nI(\theta)$.
+\end{description}
+
+\subsection{Delta Method}
+If $\tau = g(\theta)$ where $g$ is differentiable and $g'(\theta) \neq 0$:
+\[ \frac{g(\hat{\theta}_n) - g(\theta)}{|g'(\hat{\theta}_n)|\hat{\text{se}}(\hat{\theta}_n)} \xrightarrow{D} \N(0,1) \]
+
+\subsection{Empirical Distribution and Bootstrap}
+\begin{description}
+    \item[Empirical CDF (ECDF)] $\hat{F}_n(x) = \frac{1}{n}\sum_{i=1}^n I(X_i \leq x)$. 
+    \item[DKW Inequality] Non-parametric confidence bound for $F$: $P(\sup_x |F(x) - \hat{F}_n(x)| > \varepsilon) \leq 2e^{-2n\varepsilon^2}$.
+    \item[Bootstrap] Resampling with replacement to estimate the variance of a statistic $T_n = g(X_1,\dots,X_n)$.
+\end{description}
+
+
+\section{Hypothesis Testing}\smallskip \hrule height 2pt \smallskip
+
+\begin{description}
+    \item[Level and Power] Type I Error ($\alpha$): Reject $H_0$ when true. Type II Error ($\beta$): Fail to reject $H_0$ when false. Power: $1 - \beta$.
+    \item[p-value] Probability of obtaining a test statistic at least as extreme as the one observed, assuming $H_0$ is true.
+    \item[Neyman-Pearson Lemma:] For simple $H_0$ vs $H_1$, the test with critical region $\{\frac{L(\theta_1)}{L(\theta_0)} > k\}$ is the most powerful.
+\end{description}
+
+\subsection{Classical Tests}
+\begin{description}
+    \item[Wald Test] $W = \frac{\hat{\theta} - \theta_0}{\hat{\text{se}}}$. Reject $H_0$ if $|W| > z_{\alpha/2}$.
+    \item[Likelihood Ratio Test (LRT)] Compares the model under $H_0$ against the full model. Statistic $\lambda = 2 \log \left(\frac{L(\hat{\theta})}{L(\hat{\theta}_0)}\right)$.
+    \item[Multinomial LRT] For goodness of fit: $\lambda(X) = 2 \sum_{j=1}^k X_j \log \left( \frac{\hat{p}_j}{p_{0j}} \right) \xrightarrow{D} \chi^2_{k-1}$.
+    \item[Wilks' Theorem:] Under $H_0$ and regularity conditions, $\lambda \xrightarrow{D} \chi^2_d$ where $d$ is the difference in free parameters.
+    \item[Pearson's Chi-Squared Test] $T = \sum_{j=1}^k \frac{(X_j - E(X_j))^2}{E(X_j)} \xrightarrow{D} \chi^2_{k-1}$. For independence in $I \times J$ contingency tables, $df = (I-1)(J-1)$.
+    \item[Student's t-Test] $T = \frac{\bar{X} - \mu_0}{s/\sqrt{n}} \xrightarrow{D} t_{n-1}$. For two samples, standard error and degrees of freedom are adapted.
+\end{description}
+
+
+\section{Bayesian Inference}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Bayesian Updating}
+The posterior distribution combines prior information with empirical evidence from the likelihood:
+\[ f(\theta | x^n) = \frac{f(x^n | \theta)f(\theta)}{\int f(x^n | \theta)f(\theta) d\theta} \propto L(\theta)f(\theta) \]
+
+\begin{center}
+    \scalebox{0.8}{
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Likelihood} & \textbf{Parameter} & \textbf{Conjugate Prior} \\ \hline
+    Bernoulli / Binomial & $p$ & Beta($\alpha, \beta$) \\ \hline
+    Poisson($\lambda$) & $\lambda$ & Gamma($\alpha, \beta$) \\ \hline
+    Normal (known $\sigma^2$) & $\mu$ & Normal($\mu_0, \sigma_0^2$) \\ \hline
+    Normal (known $\mu$) & $\sigma^2$ & Inv-Gamma \\ \hline
+    Multinomial($\vec{p}$) & $\vec{p}$ & Dirichlet($\vec{\alpha}$) \\ \hline
+    Exponential($\lambda$) & $\lambda$ & Gamma($\alpha, \beta$) \\ \hline
+    \end{tabular}
+    }
+\end{center}
+
+\subsection{Credible Intervals and Bayes Factor}
+\begin{description}
+    \item[Credible Interval] Region $R_n$ such that $P(\theta \in R_n | x^n) = 1 - \alpha$. HPD is the Highest Posterior Density region.
+    \item[Bayes Factor ($BF$)] Ratio of marginal likelihoods of two hypotheses. $\frac{P(H_i | x^n)}{P(H_j | x^n)} = BF_{ij} \times \frac{P(H_i)}{P(H_j)}$.
+\end{description}
+
+
+\section{Regression and Regularization}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Simple and Multiple Linear Regression}
+Model: $Y = X\beta + \epsilon \quad \text{with} \quad E(\epsilon) = 0, \var(\epsilon) = \sigma^2 I$.
+\begin{description}
+    \item[Ordinary Least Squares (OLS)] $\hat{\beta} = (X^T X)^{-1} X^T Y$.
+    \item[Gauss-Markov Theorem:] In a linear model with mean zero, uncorrelated, and homoscedastic errors, the OLS estimator is the BLUE. \textbf{Assumptions (LINE):} Linearity, Independence, Normality of errors, Equal variance (Homoscedasticity).
+    \item[Diagnostics:] \quad \\
+    Non-Normality $\implies$ Box-Cox Transformation. \\
+    Heteroscedasticity $\implies$ Weighted Least Squares (WLS). \\
+    Multicollinearity $\implies$ Ridge Regression.
+    \item[Estimation of $\sigma^2$] $\hat{\sigma}^2 = \frac{\text{RSS}}{n-k} = \frac{1}{n-k} \sum (Y_i - \hat{Y}_i)^2$.
+    \item[Variance of Estimator] $\var(\hat{\beta} | X) = \sigma^2 (X^T X)^{-1}$.
+    \item[R-squared] $R^2 = 1 - \frac{\text{RSS}}{\text{TSS}} = 1 - \frac{\sum (Y_i - \hat{Y}_i)^2}{\sum (Y_i - \bar{Y})^2}$.
+\end{description}
+
+\subsection{Regularization and Bias-Variance Trade-off}
+Avoids overfitting by penalizing coefficients $\beta$:
+\begin{description}
+    \item[Ridge ($L_2$):] $\min \|Y - X\beta\|^2 + \lambda \|\beta\|_2^2$. Reduces variance in presence of multicollinearity.
+    \item[Lasso ($L_1$):] $\min \|Y - X\beta\|^2 + \lambda \|\beta\|_1$. Performs automatic variable selection (shrinks $\beta_i \to 0$).
+    \item[MSE Decomposition:] $MSE(\hat{\theta}) = \text{Bias}^2(\hat{\theta}) + \var(\hat{\theta}) + \sigma^2_{irr}$.
+\end{description}
+
+\subsection{Logistic Regression (GLM)}
+For binary classification problems, predicts probabilities using the logit link function:
+\[ p(X) = \frac{e^{\beta_0 + \beta X}}{1 + e^{\beta_0 + \beta X}} \implies \logit(p) = \ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta X \]
+
+\subsection{Model Selection}
+Penalizes complexity (parameters $k$) to prevent overfitting.
+\begin{description}
+    \item[AIC] $AIC = 2k - 2\ell(\hat{\beta}, \hat{\sigma}^2)$
+    \item[BIC] $BIC = k\log n - 2\ell(\hat{\beta}, \hat{\sigma}^2)$
+    \item[Mallow's $C_p$] $\hat{R}(S) = \text{RSS} + 2k\hat{\sigma}^2$
+\end{description}
+
+
+\section{Time Series}\smallskip \hrule height 2pt \smallskip
+
+\begin{description}
+    \item[White Noise] $w_t \sim wn(0, \sigma^2_w)$ has $E(w_t)=0, \var(w_t)=\sigma^2_w$ and $\gamma(s,t)=0$ for $s \neq t$.
+    \item[Strict Stationarity] The joint distribution is invariant under time shifts.
+    \item[Weak Stationarity] Constant mean and autocovariance $\gamma(s,t)$ that only depends on the lag $h = |s-t|$.
+    \item[ACF and PACF] Autocorrelation Function $\rho(h) = \frac{\gamma(h)}{\gamma(0)}$. PACF removes the effect of intermediate lags.
+\end{description}
+
+\begin{description}
+    \item[Backshift Operator] $B^k X_t = X_{t-k}$.
+    \item[Difference Operator] $\nabla^d = (1-B)^d$.
+\end{description}
+
+\subsection{ARIMA (p, d, q) Models}
+\begin{description}
+    \item[AR(p) Autoregressive] $x_t = \sum_{i=1}^p \phi_i x_{t-i} + w_t$. (ACF decays asymptotically, PACF cuts off at $p$).
+    \item[MA(q) Moving Average] $x_t = w_t + \sum_{j=1}^q \theta_j w_{t-j}$. (ACF cuts off at $q$, PACF decays).
+    \item[Integration (d)] Differencing $\nabla^d = (1-B)^d$ to remove stochastic trends.
+\end{description}
+
+
+\section{Markov Chains}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Definition and Properties}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2.3in]{figures/chainA.pdf}
+        \end{minipage}
+A Markov chain (over a discrete state space) guarantees the fundamental \textbf{memoryless} property: given the present state, future and past states are conditionally independent.
+\[P(X_{n+1} = j | X_0 \dots, X_n = i) = P(X_{n+1} = j | X_n = i)\]
+
+Recurrent states guarantee their future return, while transient states possess a strict probability of infinite abandonment. States can be periodic or aperiodic according to the GCD of their return steps.
+
+\subsection{Transition Matrix and Stationary Distribution}
+Matrix $Q$ where $q_{ij} = P(X_{n+1} = j | X_n = i)$. The transition probability in $m$ steps is the respective element in $Q^m$.
+
+A PMF distribution $\vec{s}$ is \textbf{Stationary} if $\vec{s}Q = \vec{s}$. For irreducible and aperiodic systems, a unique stationary distribution exists. The expected return time to state $i$ is $1/s_i$.
+If $s_iq_{ij} = s_jq_{ji}$ (Detailed balance equation) for all $i,j$, the system has Reversibility, which inherently implies stationarity.
+
+\textbf{Ergodicity:} A chain is ergodic if it is irreducible, aperiodic, and all its states are positive recurrent. This guarantees convergence to a unique stationary distribution.
+
+
+\section{Sampling Methods}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Inverse Transform] If $U \sim \Unif(0,1)$, then $X = F^{-1}(U)$ has CDF $F$.
+    \item[Rejection Sampling] To simulate $f(x)$ using $g(x)$ such that $f(x) \leq M g(x)$. 1. Generate $X \sim g$ and $U \sim \Unif(0,1)$. 2. Accept $X$ if $U \leq \frac{f(X)}{M g(X)}$.
+    \item[Importance Sampling] Estimates $E_f[h(X)]$ using $g$:
+    $E_f[h(X)] = \int h(x) \frac{f(x)}{g(x)} g(x) dx = E_g[h(X) w(X)]$ where $w(x) = f(x)/g(x)$.
+\end{description}
+
+
+\section{Decision Theory}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Loss Function] $L(\theta, a)$ measures the cost of choosing action $a$ when the parameter is $\theta$. Ex: $L(\theta, \hat{\theta}) = (\theta - \hat{\theta})^2$.
+    \item[Statistical Risk] $R(\theta, \delta) = E_\theta[L(\theta, \delta(X))]$.
+    \item[Bayes Risk] $r(\pi, \delta) = \int R(\theta, \delta) \pi(\theta) d\theta$. The Bayes rule minimizes the average risk.
+    \item[Minimax Rule] Minimizes the maximum possible risk: $\inf_\delta \sup_\theta R(\theta, \delta)$.
+\end{description}
+
+
+\section{Non-parametric Statistics}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Kernel Density Estimation (KDE)] $\hat{f}_h(x) = \frac{1}{nh} \sum_{i=1}^n K\left(\frac{x-X_i}{h}\right)$.
+    \item[Nadaraya-Watson Regression] Estimator of $m(x) = E(Y|X=x)$:
+    $\hat{m}_h(x) = \frac{\sum K_h(x-X_i)Y_i}{\sum K_h(x-X_i)}$.
+\end{description}
+
+
+\section{Continuous Distributions}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Uniform $\Unif(a, b)$}
+Probability purely proportional to the geometric size of the support region, with a flat density and zero outside.
+
+\subsection{Gaussian Normal $\N(\mu, \sigma^2)$}
+Symmetric distribution most present in nature due to the Central Limit Theorem. It is invariant under scale transformations and translations (resulting in new Gaussians). The Standard Normal evaluates with $Z = \frac{X-\mu}{\sigma} \sim \N(0,1)$.
+
+\subsection{Exponential $\Expo(\lambda)$}
+The only continuous distribution with the \textbf{memoryless} (Markovian) property. Expresses the waiting time until the next event in Poisson processes; an expected time dictated by $1/\lambda$. \\
+\textbf{Analytical formulation:} $P(X > s+t \mid X > s) = P(X > t)$.
+
+\subsection{Gamma $\Gam(a, \lambda)$}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.9in]{figures/gammapdfs.pdf}
+        \end{minipage}
+Represents the accumulated waiting time for $a$ independent occurrences in an Exponential $\lambda$ scheme.
+
+\subsection{Beta $\Beta(a, b)$}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.9in]{figures/Betapdfs.pdf}
+        \end{minipage}
+Its domain $(0,1)$ allows modeling random probabilities and proportions. It is the classic conjugate prior of the Binomial in Bayesian inference.
+
+
+\section{Discrete Distributions} \smallskip \hrule height 2pt \smallskip
+
+\subsection{Bernoulli $\Bern(p)$}
+Isolated dual experiment: Success (probability $p$) and Failure ($1-p$).
+
+\subsection{Binomial $\Bin(n, p)$} 
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.3in]{figures/Bin10_05.pdf}
+        \end{minipage}
+Accumulates the total count of independent successes under $n$ identical iterations of Bernoulli variables. If $p$ is tiny, it approximates Poisson; if $n$ is massive, it approximates Gaussian.
+
+\subsection{Geometric $\Geom(p)$ / Negative Binomial $\NBin(r, p)$}
+Register sequential Bernoulli iterations. The Geometric dictates failures prior to obtaining $1$ success. The Negative Binomial expands the model by counting the failures required before registering $r$ successes in the iteration.
+
+\subsection{Hypergeometric $\HGeom(w, b, n)$}
+Sampling without replacement. Extracts $n$ random objects from a finite universe of $w$ desired specimens and $b$ undesired ones. Lacks iterative independence.
+
+\subsection{Poisson $\Pois(\lambda)$}
+Groups continuous flows over discrete domains. Typically used for extremely atypical events operating at temporally large scales or volumes with a strict expected rate.
+
+
+\section{Multivariate Distributions} \smallskip \hrule height 2pt \smallskip
+
+\subsection{Multinomial $\Mult_k(n, \vec{p})$}
+Generalization of Binomial to vectors of $k$ independent categories. Marginally they collapse back to the Binomial version.
+Joint PMF: 
+\[P(\vec{X} = \vec{n}) =  \frac{n!}{\prod_{i=1}^k n_i!} \prod_{i=1}^k p_i^{n_i}\]
+
+\subsection{Multivariate Normal}
+Metric extension of Gaussian behavior in $k$-algebraic dimensions. Possesses the key property that uncorrelated vectors firmly equate to their underlying scalar independence. Its density function with mean vector $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$ is:
+\[ f(\mathbf{x}) = \frac{1}{\sqrt{(2\pi)^k |\boldsymbol{\Sigma}|}} \exp\left(-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{x}-\boldsymbol{\mu})\right) \]
+\textbf{Conditional Bivariate Normal:} For $(X_1, X_2) \sim \N$, the conditional expected value of $X_1$ given $X_2 = x_2$ is:
+\[ E(X_1 | X_2=x_2) = \mu_1 + \rho \frac{\sigma_1}{\sigma_2}(x_2 - \mu_2) \]
+\[ \var(X_1 | X_2=x_2) = \sigma_1^2(1 - \rho^2) \]
+
+\subsection{Dirichlet $\text{Dir}(\vec{\alpha})$}
+Conjugate prior of the Multinomial. Models probability distributions over the standard simplex. Density proportional to $\prod_{i=1}^k x_i^{\alpha_i - 1}$.
+
+
+\section{Essential Properties} \smallskip \hrule height 2pt \smallskip
+
+\subsection{Elementary Linear Convolutions}
+Maintained under the axiom of independent variables $X$ and $Y$:
+\begin{enumerate}
+    \item $X \sim \Pois(\lambda_1), Y \sim \Pois(\lambda_2) \implies X + Y \sim \Pois(\lambda_1 + \lambda_2)$
+    \item $X \sim \Bin(n_1, p), Y \sim \Bin(n_2, p) \implies X + Y \sim \Bin(n_1 + n_2, p)$
+    \item $X \sim \Gam(a_1, \lambda), Y \sim \Gam(a_2, \lambda) \implies X + Y \sim \Gam(a_1 + a_2, \lambda)$
+    \item $X \sim \N(\mu_1, \sigma_1^2), Y \sim \N(\mu_2, \sigma_2^2) \implies X+Y \sim \N(\mu_1+\mu_2, \sigma_1^2+\sigma_2^2)$
+    \item \textbf{Bank's Theorem (Beta-Gamma Relation):} $X \sim \Gam(a, \lambda), Y \sim \Gam(b, \lambda) \implies \frac{X}{X+Y} \sim \Beta(a, b)$, where $(X+Y) \independent \frac{X}{X+Y}$.
+\end{enumerate}
+
+\subsection{Analytical Inequalities}
+\begin{enumerate}
+\item \textbf{Cauchy-Schwarz} $|E(XY)| \leq \sqrt{E(X^2)E(Y^2)}$
+\item \textbf{Markov} $P(|X| \geq a) \leq \frac{E|X|}{a}$
+\item \textbf{Chebyshev} $P(|X - \mu| \geq a) \leq \frac{\sigma^2}{a^2}$
+\item \textbf{Jensen} $E(g(X)) \geq g(E(X))$ with convex $g$.
+\end{enumerate}
+
+\subsection{Entropy and Information}
+\begin{description}
+    \item[Shannon Entropy] $H(X) = - \sum_x p(x) \log_2 p(x)$. Quantifies average uncertainty.
+    \item[KL Divergence] $D_{KL}(P || Q) = \sum_x P(x) \log_2\left(\frac{P(x)}{Q(x)}\right)$. Measures information loss when approximating $P$ using $Q$.
+    \item[Mutual Information] $I(X; Y) = H(X) - H(X|Y)$
+    \item[Cross Entropy] $H(P, Q) = -\sum P(x) \log Q(x)$
+\end{description}
+
+
+\section{Basic Formulas} \smallskip \hrule height 2pt \smallskip
+\subsection{Linear and Taylor Series}
+Geometric (Finite and Infinite): $\sum_{k=0}^{n-1} r^k = \frac{1 - r^n}{1 -r}$ and asymptotic infinity for $|r|<1$ as $\frac{1}{1-r}$. \\
+Natural Exponential: $e^x = \sum_{n=0}^\infty \frac{x^n}{n!} = \lim_{n \rightarrow \infty} \left( 1 + \frac{x}{n} \right)^n$
+
+\subsection{Special Functions}
+\textbf{Gamma Function:} $\Gamma(t) = \int_0^\infty x^{t-1}e^{-x} dx$. Properties: $\Gamma(t+1)=t\Gamma(t)$, $\Gamma(n)=(n-1)!$ for $n \in \mathbb{N}$ and $\Gamma(1/2)=\sqrt{\pi}$. \\
+\textbf{Beta Function:} $B(x,y) = \int_0^1 t^{x-1}(1-t)^{y-1} dt = \frac{\Gamma(x)\Gamma(y)}{\Gamma(x+y)}$.
+
+\subsection{Stirling's Approximation}
+\textbf{Stirling's Formula:} $n! \approx \sqrt{2\pi n}(n/e)^n$.
+
+\subsection{Exponential Family}
+A distribution belongs to the exponential family if its density can be written as:
+\[ f(x|\theta) = h(x) \exp\left( \eta(\theta) \cdot T(x) - A(\theta) \right) \]
+Where $T(x)$ is the sufficient statistic, $\eta(\theta)$ the natural parameter and $A(\theta)$ the log-partition function.
+
+\subsection{Probability Generating Function (PGF)}
+For non-negative discrete R.V.s $X$:
+\[ G_X(z) = E(z^X) = \sum_{k=0}^\infty p_k z^k \]
+Factorial moments: $E[X(X-1)\dots(X-k+1)] = G^{(k)}_X(1)$.
+
+
+\section{Statistical R Commands} \smallskip \hrule height 2pt \smallskip
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Prefix} & \textbf{Action} \\
+\hline
+\texttt{d\dots(x)} & Density or Mass (PDF/PMF)\\
+\texttt{p\dots(q)} & Area under the curve (CDF)\\
+\texttt{q\dots(p)} & Quantiles and probability cuts\\
+\texttt{r\dots(n)} & Pseudo-Random Generator (i.i.d)\\
+\hline
+\end{tabular}
+\end{center}
+Replace \texttt{\dots} with norm, binom, pois, exp, etc.
+
+\section{Supplementary Content}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Common Mistakes and Supporting Notes}
+\begin{description}
+    \item[P-hacking] Adjusting $\alpha$ given multiple tests (Bonferroni Correction: $\alpha_{adj} = \alpha/n$).
+    \item[CI Interpretation] Frequentist: The interval is random and the parameter fixed. Bayesian: The parameter is random (Credible Interval).
+    \item[Expected Value Fallacy] $E(g(X)) \neq g(E(X))$ unless $g$ is linear (Jensen determines the direction of the inequality).
+    \item[Independence vs. Correlation] $\corr(X,Y)=0 \centernot\implies X \independent Y$. Uncorrelation only measures linear relationship.
+    \item[Conditioning] $P(A|B) \neq P(B|A)$ (Prosecutor's fallacy).
+    \item[R.V. Support] Check if the support depends on parameters (e.g. $\Unif(0, \theta)$); this invalidates regularity conditions.
+    \item[Cauchy:] Possesses neither defined mean nor variance. Ratio of two independent standard Normals ($Z_1/Z_2$).
+    \item[Memorylessness:] Unique to Expo (cont.) and Geom (disc.).
+\end{description}
+
+\subsection{Genesis of Distributions (Structural)}
+\begin{itemize}
+    \item $\chi^2_n$: Sum of $n$ squared standard Gaussians $\sum_{i=1}^n Z_i^2$.
+    \item $t_n$: Ratio $Z / \sqrt{V/n}$ with $V \sim \chi^2_n$.
+    \item $F_{d_1, d_2}$: Ratio of two normalized Chi-squares $(U/d_1) / (V/d_2)$.
+\end{itemize}
+
+\subsection{MCMC Sampling (Metropolis-Hastings)}
+Acceptance rule to generate samples from a complex $P(x)$:
+\[ \alpha(x \to x') = \min\left(1, \frac{P(x')Q(x|x')}{P(x)Q(x'|x)}\right) \]
+
+\subsection{Asymptotic Approximations}
+\begin{center}
+\scalebox{0.85}{
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Origin} & \textbf{Limit} & \textbf{Condition} \\ \hline
+$\Bin(n, p)$ & $\Pois(\lambda = np)$ & $n \to \infty, p \to 0$ \\ \hline
+$\Bin(n, p)$ & $\N(np, npq)$ & $np > 5, nq > 5$ \\ \hline
+$\Pois(\lambda)$ & $\N(\lambda, \lambda)$ & $\lambda > 20$ \\ \hline
+$\HGeom$ & $\Bin(n, \frac{w}{w+b})$ & $w+b \gg n$ \\ \hline
+$t_n$ & $\N(0, 1)$ & $n \to \infty$ \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\subsection{p-value Evidence (Fisher's Criterion)}
+\begin{center}
+\scalebox{0.85}{
+\begin{tabular}{|l|l|}
+\hline
+\textbf{p-value} & \textbf{Evidence against $H_0$} \\ \hline
+$p > 0.10$ & No significant evidence \\ \hline
+$0.05 < p \leq 0.10$ & Marginal evidence (weak) \\ \hline
+$0.01 < p \leq 0.05$ & Moderate evidence \\ \hline
+$p \leq 0.01$ & Very strong evidence \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\subsection{Suggested Invariance and Inference Additions}
+\begin{description}
+    \item[Stochastic Decision Guide:] \quad \\
+    $\sigma$ known $\implies Z$ (Normal). \\
+    $\sigma$ unknown ($n<30$) $\implies t$ (Student). \\
+    Var. Comparison $\implies F$ (Fisher). \\
+    Indep./Fit $\implies \chi^2$ (Chi-squared).
+    \item[Useful Relations:] \quad \\
+    $\Bin(1, p) \equiv \Bern(p)$. \\
+    $\Gam(1, \lambda) \equiv \Expo(\lambda)$. \\
+    $\Gam(n/2, 1/2) \equiv \chi^2_n$.
+    \item[Variance of Subtraction:] \quad \\
+    $\var(aX - bY) = a^2\var(X) + b^2\var(Y) - 2ab\cov(X, Y)$.
+    \item[FPCF (Sampling w/o repl.):] Finite population correction factor: $\sqrt{\frac{N-n}{N-1}}$.
+    \item[Beta Bayes Interpretation:] In $\Beta(\alpha, \beta)$, $\alpha-1$ are prior successes and $\beta-1$ are prior failures.
+\end{description}
+
+\subsection{Useful Matrix Identities}
+In the context of the Multivariate Normal $\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$:
+\begin{enumerate}
+    \item $(\mathbf{X}-\boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{X}-\boldsymbol{\mu}) \sim \chi^2_k$.
+    \item $\var(\mathbf{AX+b}) = \mathbf{A} \boldsymbol{\Sigma} \mathbf{A}^T$.
+    \item If $\boldsymbol{\Sigma}$ is diagonal $\implies$ independent components.
+\end{enumerate}
+
+\subsection{Inference and Advanced Methods}
+\textbf{Cramér-Rao Bound:} $\var(\hat{\theta}) \geq \frac{1}{nI(\theta)}$ for unbiased estimators. \\
+\textbf{Wilks' Theorem:} Under $H_0$, the likelihood ratio statistic $\lambda \xrightarrow{D} \chi^2_d$. \\
+\textbf{Bayes Kernel:} Posterior $\propto$ Likelihood $\times$ Prior. \\
+\textbf{Multi Delta Method:} If $\sqrt{n}(\hat{\theta}_n - \theta) \xrightarrow{D} \N(0, \Sigma)$:
+\[ \sqrt{n}(g(\hat{\theta}_n) - g(\theta)) \xrightarrow{D} \N(0, \nabla g(\theta)^T \Sigma \nabla g(\theta)) \]
+
+\subsection{Convergence Hierarchy}
+\begin{center}
+\begin{tikzpicture}[node distance=1.2cm, >=stealth]
+    \node (L2) {$L_2$};
+    \node (P) [right=of L2] {$P$};
+    \node (D) [right=of P] {$D$};
+    \node (AS) [above=0.6cm of P] {$a.s.$};
+    \draw[->, thick] (L2) -- (P);
+    \draw[->, thick] (P) -- (D);
+    \draw[->, thick] (AS) -- (P);
+\end{tikzpicture}
+\end{center}
+
+\end{multicols*}
+
+\vspace{-1.5cm}
+\section{Table of Distributions}
+\vspace{0.5cm} 
+
+\begin{center}
+\small 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Distribution} & \textbf{PMF/PDF and Domain (Support)} & \textbf{Expectation} & \textbf{Variance} & \textbf{MGF} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Bernoulli\\ $Bern(p)$\end{tabular} & $P(X=1)=p, P(X=0)=q=1-p$ & $p$ & $pq$ & $q+pe^t$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Binomial\\ $Bin(n, p)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=\binom{n}{k}p^k q^{n-k}$\\ $k \in \{0, 1, \dots, n\}$\end{tabular} & $np$ & $npq$ & $(q+pe^t)^n$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Geometric\\ $Geom(p)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=q^k p$ (failures)\\ $k \in \{0, 1, \dots\}$\end{tabular} & $q/p$ & $q/p^2$ & $\frac{p}{1-qe^t}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Negative Binomial\\ $NBin(r, p)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=n)=\binom{n+r-1}{n}p^r q^n$\\ $n \in \{0, 1, \dots\}$\end{tabular} & $rq/p$ & $rq/p^2$ & $(\frac{p}{1-qe^t})^r$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Hypergeometric\\ $HGeom(w, b, n)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=\frac{\binom{w}{k}\binom{b}{n-k}}{\binom{w+b}{n}}$\\ $k \in \{0, 1, \dots, n\}$\end{tabular} & $\frac{nw}{w+b}$ & $n\frac{w}{w+b}\frac{b}{w+b}\frac{w+b-n}{w+b-1}$ & Intractable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Poisson\\ $Pois(\lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}$\\ $k \in \{0, 1, \dots\}$\end{tabular} & $\lambda$ & $\lambda$ & $e^{\lambda(e^t-1)}$ \\ \hline
+\hline
+\begin{tabular}[c]{@{}c@{}}Uniform\\ $Unif(a, b)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{b-a}$\\ $x \in (a, b)$\end{tabular} & $\frac{a+b}{2}$ & $\frac{(b-a)^2}{12}$ & $\frac{e^{tb}-e^{ta}}{t(b-a)}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Normal\\ $N(\mu, \sigma^2)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-(x-\mu)^2/(2\sigma^2)}$\\ $x \in (-\infty, \infty)$\end{tabular} & $\mu$ & $\sigma^2$ & $e^{\mu t + \frac{\sigma^2 t^2}{2}}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Exponential\\ $Expo(\lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\lambda e^{-\lambda x}$\\ $x \in [0, \infty)$\end{tabular} & $\frac{1}{\lambda}$ & $\frac{1}{\lambda^2}$ & $\frac{\lambda}{\lambda-t}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Gamma\\ $Gamma(\alpha, \lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{\lambda^\alpha x^{\alpha-1}e^{-\lambda x}}{\Gamma(\alpha)}$\\ $x \in [0, \infty)$\end{tabular} & $\frac{\alpha}{\lambda}$ & $\frac{\alpha}{\lambda^2}$ & $(\frac{\lambda}{\lambda-t})^\alpha$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Beta\\ $Beta(a, b)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1}$\\ $x \in (0, 1)$\end{tabular} & $\frac{a}{a+b}$ & $\frac{ab}{(a+b)^2(a+b+1)}$ & Intractable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Log Normal\\ $LN(\mu, \sigma^2)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{x\sigma\sqrt{2\pi}}e^{-\frac{(\ln x - \mu)^2}{2\sigma^2}}$\\ $x > 0$\end{tabular} & $e^{\mu+\sigma^2/2}$ & $(e^{\sigma^2}-1)e^{2\mu+\sigma^2}$ & Does not exist \\ \hline
+\begin{tabular}[c]{@{}c@{}}Weibull\\ $W(k, \lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{k}{\lambda}(\frac{x}{\lambda})^{k-1}e^{-(x/\lambda)^k}$\\ $x \geq 0$\end{tabular} & $\lambda\Gamma(1+1/k)$ & $\lambda^2[\Gamma(1+2/k)-\Gamma^2(1+1/k)]$ & See Stirling \\ \hline
+\begin{tabular}[c]{@{}c@{}}Pareto\\ $Pa(x_m, \alpha)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{\alpha x_m^\alpha}{x^{\alpha+1}}$\\ $x \geq x_m$\end{tabular} & $\frac{\alpha x_m}{\alpha-1} (\alpha > 1)$ & $\frac{x_m^2 \alpha}{(\alpha-1)^2(\alpha-2)} (\alpha > 2)$ & Does not exist \\ \hline
+\begin{tabular}[c]{@{}c@{}}Laplace\\ $L(\mu, b)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{2b}e^{-\frac{|x-\mu|}{b}}$\\ $x \in (-\infty, \infty)$\end{tabular} & $\mu$ & $2b^2$ & $\frac{e^{\mu t}}{1-b^2t^2} (|t| < 1/b)$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Chi-Squared\\ $\chi^2_n$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\frac{1}{2^{n/2}\Gamma(n/2)}x^{n/2-1}e^{-x/2}$\\ $x \in (0, \infty)$\end{tabular} & $n$ & $2n$ & $(1-2t)^{-n/2}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Student's t\\ $t_\nu$\end{tabular} & $f(x) \propto (1+\frac{x^2}{\nu})^{-\frac{\nu+1}{2}}$ & $0 (\nu > 1)$ & $\frac{\nu}{\nu-2} (\nu > 2)$ & Intractable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Fisher's F\\ $F_{d_1, d_2}$\end{tabular} & $f(x) \propto \frac{\sqrt{\frac{(d_1 x)^{d_1} d_2^{d_2}}{(d_1 x + d_2)^{d_1+d_2}}}}{x B(\frac{d_1}{2}, \frac{d_2}{2})}$ & $\frac{d_2}{d_2-2}$ & $\frac{2d_2^2(d_1+d_2-2)}{d_1(d_2-2)^2(d_2-4)}$ & Intractable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Cauchy\\ $Cauchy(x_0, \gamma)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{\pi\gamma [1+(\frac{x-x_0}{\gamma})^2]}$\\ $x \in (-\infty, \infty)$\end{tabular} & Undefined & Undefined & Undefined \\ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\begin{sidewaysfigure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/relationships.pdf}
+\end{sidewaysfigure}
+
+\end{document}

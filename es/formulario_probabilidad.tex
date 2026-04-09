@@ -1,0 +1,1013 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{latexsym, marvosym}
+\usepackage{pifont}
+\usepackage{lscape}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[bottom]{footmisc}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{pdfpages}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\setlist[description]{leftmargin=0pt}
+\usepackage{xfrac}
+\usepackage[pdftex,
+            pdfauthor={William Chen, adaptado},
+            pdftitle={Formulario de Probabilidad e Inferencia},
+            pdfsubject={Referencia integral de probabilidad matemática y estadística},
+            pdfkeywords={probabilidad} {estadística} {formulario} {matemáticas}
+            ]{hyperref}
+\usepackage[
+            open,
+            openlevel=2
+            ]{bookmark}
+\usepackage{relsize}
+\usepackage{rotating}
+\usepackage{centernot} 
+\usetikzlibrary{shapes, arrows, positioning}
+ \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+    \def\independenT#1#2{\mathrel{\setbox0\hbox{$#1#2$}%
+    \copy0\kern-\wd0\mkern4mu\box0}}            
+\newcommand{\noin}{\noindent}   
+\newcommand{\logit}{\textrm{logit}} 
+\newcommand{\var}{\textrm{Var}}
+\newcommand{\cov}{\textrm{Cov}} 
+\newcommand{\corr}{\textrm{Corr}} 
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Bern}{\textrm{Bern}}
+\newcommand{\Bin}{\textrm{Bin}}
+\newcommand{\Beta}{\textrm{Beta}}
+\newcommand{\Gam}{\textrm{Gamma}}
+\newcommand{\Expo}{\textrm{Expo}}
+\newcommand{\Pois}{\textrm{Pois}}
+\newcommand{\Unif}{\textrm{Unif}}
+\newcommand{\Geom}{\textrm{Geom}}
+\newcommand{\NBin}{\textrm{NBin}}
+\newcommand{\Hypergeometric}{\textrm{HGeom}}
+\newcommand{\HGeom}{\textrm{HGeom}}
+\newcommand{\Mult}{\textrm{Mult}}
+
+\geometry{top=.4in,left=.2in,right=.2in,bottom=.4in}
+
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+{\color{blue}\normalfont\large\bfseries}
+{\color{blue}\thesection}{1em}{}
+\titleformat{\subsection}
+{\color{cyan}\normalfont\normalsize\bfseries}
+{\color{cyan}\thesection}{1em}{}
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols*}{3}
+
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+    {\color{blue} \Large{\textbf{Formulario de Probabilidad e Inferencia}}} \\
+\end{center}
+
+\scriptsize
+Material originalmente compilado por William Chen y Joe Blitzstein. Ampliado sustancialmente con extractos del Statistics Cookbook de Matthias Vallentin, adaptado al español manteniendo el rigor Por Roberto León Landeros. Este trabajo se distribuye bajo la licencia Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0)
+
+\begin{center}
+    Última actualización \today
+\end{center}
+
+\section{Conteo y Combinatoria}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Regla de la Multiplicación} 
+\begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[width=2in]{figures/icecream.pdf}
+\end{minipage}
+        
+Para un experimento compuesto con múltiples componentes, si la componente $i$ tiene $n_i$ posibles resultados, el total de resultados para el experimento completo de $r$ componentes es el producto de las cardinalidades individuales:
+\[ N = n_1 \times n_2 \times \dots \times n_r = \prod_{i=1}^{r} n_i \]
+ 
+\subsection{Tabla de Muestreo}
+\begin{minipage}{\linewidth}
+        \centering
+         \includegraphics[width=1.2in]{figures/jar.pdf}
+\end{minipage}
+
+Opciones de extracción de una muestra de tamaño $n$ desde una población $S = \{1,\dots,s\}$ de tamaño $s$:
+\begin{center}
+        \setlength{\extrarowheight}{7pt}
+    \begin{tabular}{|c|c|c|}
+    \hline
+        \textbf{Muestra $n$ de pob. $s$} & \textbf{Con Reemplazo} & \textbf{Sin Reemplazo} \\ \hline
+        \textbf{Con Orden} & $s^n$ & $(s)_n = \frac{s!}{(s-n)!}$ \\ \hline
+        \textbf{Sin Orden} & $\binom{n+s-1}{s-1}$ & $\binom{s}{n} = \frac{s!}{n!(s-n)!}$ \\ \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Particiones y Asignaciones (Bolas en Urnas)}
+\textbf{Números de Stirling (2da especie)} $\left\{\begin{matrix}n\\k\end{matrix}\right\}$: Formas de particionar $n$ elementos en $k$ subconjuntos no vacíos. $\left\{\begin{matrix}n\\k\end{matrix}\right\} = k\left\{\begin{matrix}n-1\\k\end{matrix}\right\} + \left\{\begin{matrix}n-1\\k-1\end{matrix}\right\}$.\\
+\textbf{Asignación de $n$ bolas a $m$ urnas:}
+\begin{center}
+\scalebox{0.85}{
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Bolas} & \textbf{Urnas} & \textbf{Cualquier asig.} & \textbf{Muestreo s.r.} (Inyect.) \\ \hline
+Dist. & Dist. & $m^n$ & $\frac{m!}{(m-n)!}$ \\ \hline
+Indist. & Dist. & $\binom{m+n-1}{n}$ & $\binom{m}{n}$ \\ \hline
+Dist. & Indist. & $\sum_{k=1}^m \left\{\begin{matrix}n\\k\end{matrix}\right\}$ & 1 si $m \ge n$ \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\subsection{Definiciones Adicionales de Probabilidad} 
+\begin{description}
+    \item[Clásica (Laplace)] Si los elementos son equiprobables: $P(A) = \frac{\text{casos favorables}}{\text{casos totales}} = \frac{\#A}{\#\Omega}$
+    \item[Frecuencia Relativa] $h_n(A) = \frac{m}{n}$ (frecuencia absoluta entre total).
+    \item[Geométrica] $P(A) = \frac{m(A)}{m(\Omega)}$, donde $m$ denota la medida geométrica (longitud, área o volumen).
+\end{description}
+
+\subsection{Expansiones Algebraicas}
+\begin{description}
+    \item[Binomio de Newton:] $(a+b)^n = \sum_{k=0}^n \binom{n}{k} a^k b^{n-k}$
+    \item[Coeficiente Multinomial:] $\binom{n}{n_1, n_2, \dots, n_k} = \frac{n!}{n_1! n_2! \dots n_k!}$
+    \item[Teorema Multinomial:] $(a_1 + \dots + a_m)^n = \sum_{n_1+\dots+n_m = n} \binom{n}{n_1,\dots,n_m} a_1^{n_1} \dots a_m^{n_m}$
+\end{description}
+
+
+\section{Fundamentos Teóricos}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Operaciones y Álgebra de Conjuntos}
+\begin{description}
+    \item[Leyes de Morgan (Dualidad)] $(A \cup B)^c = A^c \cap B^c$ \quad y \quad $(A \cap B)^c = A^c \cup B^c$
+    \item[Diferencia] $A \setminus B = A \cap B^c$
+    \item[Diferencia Simétrica] $A \triangle B = (A \setminus B) \cup (B \setminus A) = (A \cup B) \setminus (A \cap B)$
+    \item[Identidades de Unión] $A \cup B = $ $A \cup (B \cap A^c) = (A \cap B^c) \cup (B \cap A^c) \cup (A \cap B)$
+    \item[Propiedades Distributivas] 
+    $(A \cup B) \cap C = (A \cap C) \cup (B \cap C)$ \\
+    $(A \cap B) \cup C = (A \cup C) \cap (B \cup C)$
+\end{description}
+
+\subsection{Sistema Axiomático de Kolmogorov}
+Sea $P$ una función sobre una $\sigma$-álgebra $\mathfrak{F}$:
+\begin{enumerate}
+    \item $\Omega \in \mathfrak{F}$
+    \item $A \in \mathfrak{F} \implies $ $A^c \in \mathfrak{F}$
+    \item $\bigcup_{i=1}^\infty A_i \in \mathfrak{F}$
+\end{enumerate}
+Los axiomas de la medida de probabilidad $P$ son:
+\begin{description}
+    \item[Axioma I (No negatividad)] $0 \leq P(A) \leq 1$
+    \item[Axioma II (Certeza)] $P(\Omega) = 1$
+    \item[Axioma III (Aditividad finita)] Si $A \cap B = \emptyset$, $P(A \cup B) = P(A) + P(B)$
+    \item[Axioma IV ($\sigma$-aditividad)] Para $\{A_i\}_{i=1}^\infty$ ajenos, $P(\bigcup_{i=1}^\infty A_i) = \sum_{i=1}^\infty P(A_i)$
+\end{description}
+
+\subsection{Teoremas y Reglas Básicas}
+\begin{description}
+    \item[Imposibilidad] $P(\emptyset) = 0$
+    \item[Complemento] $P(A^c) = 1 - P(A)$
+    \item[Monotonía] Si $A \subset B \implies P(A) \leq P(B)$
+    \item[Diferencia] Si $A \subset B \implies P(B \setminus A) = P(B) - P(A)$
+    \item[Resta general] $P(A \setminus B) = P(A) - P(A \cap B)$
+    \item[Desigualdad de Boole] $P(\bigcup_{i=1}^n A_i) \leq \sum_{i=1}^n P(A_i)$
+    \item[Des. de Bonferroni] $P(\bigcup_{i=1}^n A_i) \geq \sum_{i=1}^n P(A_i) - \sum_{i<j} P(A_i \cap A_j)$
+    \item[Continuidad] Si $A_n \uparrow A \implies P(A) = \lim_{n \to \infty} P(A_n)$
+\end{description}
+
+
+\section{Probabilidad Condicional}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Independencia}
+\begin{description}
+    \item[Eventos Independientes] $A$ y $B$ son independientes si conocer la ocurrencia de $A$ no provee información sobre $B$. Equivalencias:
+           \begin{align*} 
+            P(A \cap B) &= P(A)P(B) \\
+            P(A | B) &= P(A)\\
+            P(B | A) &= P(B)
+           \end{align*}
+    \item[Independencia Condicional] $A$ y $B$ son condicionalmente independientes dado $C$ si $P(A \cap B | C) = P(A | C)P(B | C)$. No implica independencia absoluta, ni viceversa.
+\end{description}
+
+\subsection{Probabilidades Conjuntas, Marginales y Condicionales}
+\begin{description}
+    \item[Probabilidad Conjunta] $P(A \cap B)$ o $P(A, B)$ -- Probabilidad de que sucedan $A$ y $B$.
+    \item[Probabilidad Marginal] $P(A)$ -- Probabilidad incondicional.
+    \item[Probabilidad Condicional] $P(A | B) = \frac{P(A \cap B)}{P(B)}$ (para $P(B)>0$). Satisface todos los axiomas de Kolmogorov.
+\end{description}
+
+\subsection{Probabilidad de Intersecciones y Uniones}
+\textbf{Regla de la Cadena (Multiplicación)}
+\begin{align*} 
+    P(A_1 \cap \dots \cap A_n) &= P(A_1)P(A_2|A_1)\dots P(A_n|A_1 \dots A_{n-1}) \\
+    P\Big(\bigcap_{i=1}^n A_i\Big) &= \prod_{i=1}^n P\Big(A_i \Big| \bigcap_{j=1}^{i-1} A_j\Big)
+\end{align*}
+
+\textbf{Inclusión-Exclusión (Uniones)}
+Para $2$ eventos: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$ \\
+Para $n$ eventos: $P(\bigcup_{i=1}^n A_i) = \sum_{r=1}^n (-1)^{r-1} S_r^n$ \\
+Donde $S_r^n = \sum_{1 \leq i_1 < \dots < i_r \leq n} P(A_{i_1} \cap \dots \cap A_{i_r})$
+
+\subsection{Paradoja de Simpson}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/SimpsonsParadox.pdf}
+        \end{minipage}
+Es analíticamente posible observar:
+\[P(A| B,C) < P(A| B^c, C) \text{ y } P(A| B, C^c) < P(A | B^c, C^c)\]
+\[ \text{pero de forma global: } P(A| B) > P(A | B^c).\]
+
+\subsection{Ley de Probabilidad Total (LOTP)}
+Sea $\{B_1, \dots, B_n\}$ una partición del espacio muestral (ajenos mutuamente, unión igual a $\Omega$).
+\begin{align*} 
+    P(A) &= P(A | B_1)P(B_1) + \dots + P(A | B_n)P(B_n) = \sum_{i=1}^n P(A | B_i)P(B_i) \\
+    P(A) &= P(A \cap B_1) + \dots + P(A \cap B_n) = \sum_{i=1}^n P(A \cap B_i)
+\end{align*} 
+Para \textbf{LOTP con condicionamiento extra $C$}:
+\begin{align*} 
+    P(A| C) &= \sum_{i=1}^n P(A | B_i, C)P(B_i | C)
+\end{align*} 
+
+\subsection{Teorema de Bayes}
+\textbf{Inversión Condicional:}
+         \[P(A| B)  = \frac{P(B| A)P(A)}{P(B)} = \frac{P(B|A)P(A)}{\sum_{i=1}^n P(B|A_i)P(A_i)}\]
+Con condicionamiento adicional:
+         \[P(A| B, C) = \frac{P(B| A, C)P(A | C)}{P(B | C)}\]
+\textbf{Forma de Momios (Odds) de Bayes:}
+\[\frac{P(A| B)}{P(A^c| B)} = \frac{P(B| A)}{P(B| A^c)}\frac{P(A)}{P(A^c)}\]
+
+\section{Variables Aleatorias Discretas}\smallskip \hrule height 2pt \smallskip
+
+\subsection{PMF, CDF e Independencia}
+\begin{description}
+\item[Función de Masa de Probabilidad (PMF)] 
+Devuelve la probabilidad de que una V.A. \emph{discreta} tome un valor específico $x$.
+\[ p_X(x) = P(X=x) \]
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/Binpmf.pdf}
+        \end{minipage}
+Condiciones: $p_X(x) \geq 0$ y $\sum_x p_X(x) = 1$.
+
+\item[Función de Distribución Acumulada (CDF)] 
+Probabilidad de que una V.A. sea menor o igual a $x$.
+\[F_X(x) = P(X \leq x)\]
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/Bincdf.pdf}
+        \end{minipage}
+Monótona creciente, continua por la derecha, $\lim_{x \to -\infty} F_X(x) = 0$, $\lim_{x \to \infty} F_X(x) = 1$.
+
+\item[Independencia de V.A.] V.A. $X$ y $Y$ son independientes si conocer el valor de una no brinda información de la otra. Para variables discretas, para todo $x,y$: 
+$P(X=x, Y=y) = P(X = x)P(Y = y)$
+\end{description}
+
+\section{Valor Esperado e Indicadoras}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Valor Esperado y Linealidad}
+\begin{description}
+\item[Esperanza] Medida central o promedio ponderado de la distribución. Para $X$ discreta con soporte $\{x_1, x_2, \dots \}$:
+\[E(X) = \sum_{i} x_i P(X=x_i)\]
+
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/linearity.pdf}
+        \end{minipage}
+
+\item[Linealidad] Para V.A. $X,Y$ y constantes $a,b,c$:
+\[E(aX + bY + c) = aE(X) + bE(Y) + c \]
+
+\item[Misma distribución] Si $X$ y $Y$ comparten distribución, $E(X)=E(Y)$ y $E(g(X)) = E(g(Y))$.
+
+\item[Valor Esperado Condicional] Expectativa ponderada sobre un evento condicional $A$:
+\[ E(X | A) = \sum_{x} x P(X=x | A)\]
+\end{description}
+
+\subsection{Variables Indicadoras}
+Toman valor 1 si el evento sucede, 0 en caso contrario. 
+\[ I_A = \begin{cases} 1 & \text{si } A \text{ ocurre} \\ 0 & \text{si } A^c \text{ ocurre} \end{cases} \]
+Propiedades: $I_A^2 = I_A$, $I_A I_B = I_{A \cap B}$, $I_{A \cup B} = I_A + I_B - I_A I_B$.
+Distribución: $I_A \sim \Bern(p)$ con $p = P(A)$. \\
+\textbf{Puente Fundamental:} $E(I_A) = P(A)$. \\
+\textbf{Varianza y Covarianza:} $\var(I_A) = P(A)(1-P(A))$, $\cov(I_A, I_B) = P(A \cap B) - P(A)P(B)$.
+
+\subsection{Varianza y Desviación Estándar}
+\[\var(X) = E \left((X - E(X))^2\right) = E(X^2) - (E(X))^2\]
+\[\textrm{SD}(X) = \sqrt{\var(X)}\]
+
+
+\section{V.A. Continuas, LOTUS, UoU}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Variables Aleatorias Continuas (CRVs)}
+\begin{description}
+\item[Probabilidad en intervalos] 
+\[P(a \leq X \leq b) = F_X(b) - F_X(a)\]
+Para la Normal Estándar $Z \sim \N(0,1)$, la probabilidad es $\Phi(b) - \Phi(a)$.
+
+\item[Función de Densidad de Probabilidad (PDF)] La derivada de la CDF.
+\[ f(x) = \frac{d}{dx} F(x) \implies F(x) = \int_{-\infty}^x f(t)dt \]
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/Logisticpdfcdf.pdf}
+        \end{minipage}
+Debe integrar a 1 y ser no-negativa.
+
+\item[Valor Esperado] Análogo al caso discreto pero con integral.
+\[E(X) = \int_{-\infty}^\infty x f(x) dx \]
+\end{description}
+
+\label{lotus}
+\subsection{LOTUS (Ley del Cambio de Variable para la Esperanza)}
+Facilita hallar el valor esperado de una función dependiente de $X$, $g(X)$, operando sobre la PDF o PMF de $X$.
+Discreto: $E(g(X)) = \sum_x g(x)P(X=x)$
+Continuo: $E(g(X)) = \int_{-\infty}^\infty g(x)f(x)dx$
+
+\subsection{Universalidad de la Uniforme (UoU)} 
+Al evaluar una V.A. continua en su propia CDF, resulta en una Uniforme. Si $X$ tiene CDF $F$, entonces $F(X) \sim \Unif(0,1)$. Inversamente, si $U \sim \Unif(0,1)$, entonces $F^{-1}(U)$ tiene distribución $F$. Esto facilita la simulación computacional de V.A.
+
+
+\section{Momentos y Funciones Generadoras}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Momentos}
+Describen la forma de la distribución. Para V.A. estandarizada $Z = \frac{X-\mu}{\sigma}$:
+\begin{description}
+        \item[Media (1er momento)] $E(X) = \mu_1 $
+        \item[Varianza (2do central)] $\var(X) = \mu_2 - \mu_1^2$
+        \item[Asimetría (Skewness)] $\textrm{Skew}(X) = E(Z^3)$
+        \item[Curtosis] $\textrm{Kurt}(X) = E(Z^4) - 3$
+\end{description}
+
+\subsection{Función Generadora de Momentos (MGF)}
+\begin{description}
+    \item[MGF] Definida como $M_X(t) = E(e^{tX})$.
+    \item[Obtención de Momentos] La $k$-ésima derivada evaluada en $0$ otorga el $k$-ésimo momento: $\mu_k = E(X^k) = M_X^{(k)}(0)$.
+    Basado en expansión de Taylor: $M_X(t) = \sum_{k=0}^\infty \frac{E(X^k)t^k}{k!}$.
+    \item[Transformación Lineal] Para $Y = aX + b$, $M_Y(t) = e^{bt}M_X(at)$.
+    \item[Unicidad] La MGF determina unívocamente la distribución de probabilidad (si existe).
+    \item[Suma de Independientes] Si $X \independent Y$:
+    $M_{X+Y}(t) = M_X(t) M_Y(t)$
+\end{description}
+
+
+\section{Funciones de Densidad y Masa Conjuntas}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Distribuciones Conjuntas}
+\textbf{CDF Conjunta:} $F_{X,Y}(x,y)=P(X \leq x, Y \leq y)$ \\
+\textbf{PMF Conjunta:} $p_{X,Y}(x,y) = P(X=x,Y=y)$ \\
+\textbf{PDF Conjunta:} $f_{X,Y}(x,y) = \frac{\partial^2}{\partial x \partial y} F_{X,Y}(x,y)$
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.0in]{figures/jointPDF.pdf}
+        \end{minipage}
+        
+\subsection{Distribuciones Condicionales y Regla de Bayes}
+Para discretas: $P(Y=y|X=x) = \frac{P(X=x, Y=y)}{P(X=x)} = \frac{P(X=x|Y=y)P(Y=y)}{P(X=x)} \\
+Para continuas: $f_{Y|X}(y|x) = \frac{f_{X,Y}(x, y)}{f_X(x)} = \frac{f_{X|Y}(x|y)f_Y(y)}{f_X(x)}$
+
+\subsection{Distribuciones Marginales}
+Obtención de distribución aislada integrando/sumando la variable indeseada.
+Discreta: $P(X = x) = \sum_y P(X=x, Y=y)$ \\
+Continua: $f_X(x) = \int_{-\infty}^\infty f_{X, Y}(x, y) dy$
+
+\subsection{LOTUS Multivariado}
+Discreto: $E(g(X, Y)) = \sum_x\sum_y g(x, y)P(X=x, Y=y)$ \\
+Continua: $E(g(X, Y)) = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty} g(x, y)f_{X,Y}(x, y)dxdy$
+
+
+\section{Covarianza y Transformaciones}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Covarianza y Correlación}
+\begin{description}
+\item [Covarianza] Analogo multivariado de varianza.
+    \[\cov(X, Y) = E((X - E(X))(Y - E(Y))) = E(XY) - E(X)E(Y)\]
+\item [Correlación] Covarianza estandarizada $[-1, 1]$.
+    \[\corr(X, Y) = \frac{\cov(X, Y)}{\sqrt{\var(X)\var(Y)}} \]
+\item [Independencia] $X \independent Y \implies \cov(X, Y) = 0$. El recíproco suele ser falso (salvo excepciones como Normal Multivariada).
+\item [Varianza de Sumas] 
+    $\var(X + Y) = \var(X) + \var(Y) + 2\cov(X, Y)$ \\
+    Para una sumatoria genérica con variables con relaciones idénticas (simetría):
+    \[\var\Big(\sum_{i=1}^n X_i\Big) = \sum_{i=1}^n \var(X_i) + 2\sum_{i < j} \cov(X_i, X_j)\]
+\item [Propiedades Bilineales] 
+    $\cov(aX+c, bY+d) = ab\cov(X, Y)$ \\
+    $\cov(X+Y, Z+W) = \cov(X,Z) + \cov(X,W) + \cov(Y,Z) + \cov(Y,W)$
+\end{description}
+
+\subsection{Transformación 1D}
+Para $Y = g(X)$ donde $g$ es monótona y derivable:
+\[f_Y(y) = f_X(g^{-1}(y)) \left| \frac{d}{dy} g^{-1}(y) \right|\]
+
+\subsection{Transformaciones Multivariadas}
+Para V.A. $(U,V)$ con PDF conjunta y $(X, Y) = g(U, V)$, el determinante de la matriz Jacobiana es fundamental para cambiar el dominio de densidad.
+$$  J = \begin{pmatrix}   
+              \frac{\partial u}{\partial x} &  \frac{\partial u}{\partial y} \\
+           \frac{\partial v}{\partial x} & \frac{\partial v}{\partial y}   \\
+        \end{pmatrix}$$
+\[f_{X,Y}(x, y) = f_{U,V}(u,v) | \det(J) | \]
+
+\label{convolutions}
+\subsection{Convoluciones}
+Integral para la PDF de la suma de dos variables continuas independientes $X,Y$:
+\[f_{X+Y}(t)=\int_{-\infty}^\infty f_X(x)f_Y(t-x)dx\]
+
+
+\section{Proceso de Poisson}\smallskip \hrule height 2pt \smallskip
+
+\begin{description}
+\item[Definición] Tasas de eventos modeladas en intervalos temporales $\lambda$.
+\begin{enumerate}
+    \item Los eventos en un intervalo $t$ siguen $\Pois(\lambda t)$.
+    \item Incrementos en intervalos disjuntos son independientes.
+\end{enumerate}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2in]{figures/pp.pdf}
+        \end{minipage}
+        
+\item[Superposición y Muestreo]
+    \begin{enumerate}
+        \item \textbf{Superposición:} Si $N_1(t) \sim PP(\lambda_1)$ y $N_2(t) \sim PP(\lambda_2)$ independientes, entonces $N_1(t)+N_2(t) \sim PP(\lambda_1+\lambda_2)$.
+        \item \textbf{Muestreo (Thinning):} Si $N \sim \text{Pois}(\lambda)$ y cada evento se clasifica como tipo $i$ con prob $p_i$, entonces los conteos $N_i$ son independientes y $N_i \sim \text{Pois}(\lambda p_i)$.
+    \end{enumerate}
+        
+\item[Dualidad Conteo-Tiempo] El tiempo hasta el primer evento sigue una distribución Exponencial $\Expo(\lambda)$, ya que el evento de esperar $t$ horas equivale a observar 0 llegadas en $t$ horas ($N_t = 0$). Los tiempos de inter-llegadas son i.i.d. $\Expo(\lambda)$.
+\end{description}
+
+
+\section{Estadísticos de Orden}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Definición] Sean $X_1, \dots, X_n$ variables aleatorias i.i.d. Al ordenarlas de menor a mayor, $X_{(i)}$ denota el $i$-ésimo estadístico de orden. El mínimo es $X_{(1)}$ y el máximo $X_{(n)}$. Suelen exhibir dependencia estadística.
+    \item[Distribución] La CDF y PDF del elemento $X_{(i)}$ están dadas por:
+        \[F_{X_{(i)}}(x) = \sum_{k=i}^n \binom{n}{k} F(x)^k(1 - F(x))^{n - k}\]
+    \[f_{X_{(i)}}(x) = n\binom{n - 1}{i - 1}F(x)^{i-1}(1 - F(x))^{n-i}f(x)\]
+    \item[Estadísticos Ordenados Uniformes] El componente $j$-ésimo de $U_1,\dots,U_n \sim \Unif(0,1)$ distribuye $U_{(j)} \sim \Beta(j, n - j + 1)$.
+\end{description}
+
+
+\section{Esperanza Condicional}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Condicionada a un Evento] Esperanza dado el evento $A$. Resulta en un valor escalar determinista.
+\end{description}
+        \scalebox{0.85}{
+                        \setlength{\extrarowheight}{7pt}
+            \begin{tabular}{|c|c|} \hline
+                  \textbf{Discreta} & \textbf{Continua} \\
+            \hline
+            $E(Y) = \sum_y y P(Y=y)$ & $E(Y) =\int_{-\infty}^\infty y f_Y(y)dy$ \\
+            $E(Y|A) = \sum_y y P(Y=y|A)$ & $E(Y|A) = \int_{-\infty}^\infty y f(y|A)dy$ \\ 
+            \hline
+            \end{tabular}
+        }
+        \medskip
+\begin{description}
+    \item[Condicionada a una V.A.] El término $E(Y|X)$ es una función matemática de la variable aleatoria $X$. Únicamente colapsa a una constante si son independientes ($X \independent Y$).
+        
+    \item[Propiedades Analíticas] \quad
+    \begin{enumerate}
+        \item $E(Y|X) = E(Y)$ si $X \independent Y$.
+        \item $E(h(X)W|X) = h(X)E(W|X)$ (extracción de escalares conocidos).
+        \item $E(E(Y|X)) = E(Y)$ (Ley de Adam).
+    \end{enumerate}
+
+    \item[Ley de Adam (Esperanza Total)] 
+    \[ E(Y) = \sum_{i=1}^n E(Y|A_i)P(A_i) \]
+
+    \item[Ley de Eve (Varianza Total)] \quad
+    \[\var(Y) = E(\var(Y|X)) + \var(E(Y|X))\]
+\end{description}
+
+
+\section{Teoremas Límite Clásicos}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Tipos de Convergencia}
+\begin{description}
+    \item[En Distribución (Ley)] $X_n \xrightarrow{D} X \iff \lim_{n \to \infty} F_n(t) = F(t)$
+    \item[En Probabilidad] $X_n \xrightarrow{P} X \iff \lim_{n \to \infty} P(|X_n - X| > \varepsilon) = 0$
+    \item[Casi Segura] $X_n \xrightarrow{a.s.} X \iff P(\lim_{n \to \infty} X_n = X) = 1$
+    \item[Media Cuadrática ($L_2$)] $X_n \xrightarrow{qm} X \iff \lim_{n \to \infty} E((X_n - X)^2) = 0$
+\end{description}
+\textbf{Jerarquía:} $qm \implies P \implies D$ y $a.s. \implies P$.
+
+\subsection{Teorema de Slutsky}
+Si $X_n \xrightarrow{D} X$ y $Y_n \xrightarrow{P} c$:
+\[ X_n + Y_n \xrightarrow{D} X + c \quad \text{y} \quad X_n Y_n \xrightarrow{D} cX \]
+
+\subsection{Ley de los Grandes Números (LLN)}
+Para un conjunto grande de V.A. $X_i$ i.i.d con media $\mu$, la media muestral $\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$ converge directamente a $\mu$ conforme $n \to \infty$ (en probabilidad para WLLN y casi segura para SLLN).
+
+\subsection{Teorema del Límite Central (CLT)}
+Las sumatorias y promedios muestrales de V.A. convergen asintóticamente hacia la distribución Normal, indistintamente de su distribución de origen.
+\[Y = \sum X_i \dot{\,\sim\,} \N(n\mu_X, n\sigma^2_X)\]
+\[ \bar{X}_n \dot{\,\sim\,} \N(\mu_X, \sigma^2_X/n) \]
+Estandarización Asintótica:
+\[ \frac{\sqrt{n} (\bar{X}_n - \mu_X)}{\sigma_X} \xrightarrow{D} \N(0, 1)\]
+
+
+\section{Inferencia Estadística}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Estimación Puntual y Propiedades}
+\begin{description}
+    \item[Sesgo (Bias)] $\text{Bias}(\hat{\theta}_n) = E(\hat{\theta}_n) - \theta$.
+    \item[Consistencia] $\hat{\theta}_n \xrightarrow{P} \theta$.
+    \item[Error Cuadrático Medio (MSE)] $E((\hat{\theta}_n - \theta)^2) = \text{Bias}^2 + \var(\hat{\theta}_n)$.
+    \item[Suficiencia] $T(X)$ es suficiente si la distribución condicional de los datos dado $T$ no depende de $\theta$.
+    \item[T. de Factorización (Fisher-Neyman)] $T(X)$ es suficiente para $\theta \iff f(x|\theta) = g(T(x), \theta)h(x)$.
+    \item[Eficiencia Asintótica] Un estimador es eficiente si su varianza alcanza la Cota de Cramér-Rao.
+    \item[Mejora de Rao-Blackwell] Sea $\hat{\theta}$ un estimador insesgado y $T$ un estadístico suficiente. Entonces $\eta = E(\hat{\theta}|T)$ es un estimador insesgado con $\var(\eta) \leq \var(\hat{\theta})$.
+\end{description}
+
+\subsection{Información de Fisher y Cota Inferior}
+\begin{description}
+    \item[Información de Fisher] $I(\theta) = -E\left(\frac{\partial^2}{\partial\theta^2}\log f(X ; \theta)\right)$.
+    \item[Cota de Cramér-Rao] Para cualquier estimador insesgado $W(X)$ de $\theta$: 
+    \[\var(W) \geq \frac{1}{nI(\theta)}\]
+\end{description}
+
+\subsection{Intervalos de Confianza (IC)}
+\begin{description}
+    \item[Media (var. conocida)] $\bar{X} \pm z_{\alpha/2} \frac{\sigma}{\sqrt{n}}$
+    \item[Media (var. desconocida)] $\bar{X} \pm t_{\alpha/2, n-1} \frac{s}{\sqrt{n}}$
+    \item[Proporción] $\hat{p} \pm z_{\alpha/2} \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$
+\end{description}
+
+\subsection{Método de Momentos (MoM)}
+Igualar los momentos poblacionales teóricos $\alpha_j(\theta) = E(X^j)$ con los momentos muestrales $\hat{\alpha}_j = \frac{1}{n}\sum X_i^j$ y resolver para $\theta$.
+
+\subsection{Máxima Verosimilitud (MLE)}
+\begin{description}
+    \item[Función de Verosimilitud] $L(\theta) = \prod_{i=1}^n f(X_i ; \theta)$
+    \item[Log-Verosimilitud] $\ell(\theta) = \log L(\theta) = \sum_{i=1}^n \log f(X_i ; \theta)$
+    \item[Estimador MLE] $\hat{\theta}_n = \sup_\theta L(\theta)$.
+    \item[Propiedades Asintóticas] Bajo condiciones de regularidad: $\hat{\theta}_{MLE} \xrightarrow{D} \mathcal{N}(\theta, \frac{1}{nI(\theta)})$. Esto conecta el MLE con la Cota de Cramér-Rao y explica por qué es "eficiente".
+    \item[Información de Fisher] $I(\theta) = \var\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right) = -E\left(\frac{\partial^2}{\partial\theta^2}\log f(X;\theta)\right)$. Para la muestra entera: $I_n(\theta) = nI(\theta)$.
+\end{description}
+
+\subsection{Método Delta}
+Si $\tau = g(\theta)$ donde $g$ es diferenciable y $g'(\theta) \neq 0$:
+\[ \frac{g(\hat{\theta}_n) - g(\theta)}{|g'(\hat{\theta}_n)|\hat{\text{se}}(\hat{\theta}_n)} \xrightarrow{D} \N(0,1) \]
+
+\subsection{Distribución Empírica y Bootstrap}
+\begin{description}
+    \item[CDF Empírica (ECDF)] $\hat{F}_n(x) = \frac{1}{n}\sum_{i=1}^n I(X_i \leq x)$. 
+    \item[Desigualdad DKW] Límite de confianza no paramétrico para $F$: $P(\sup_x |F(x) - \hat{F}_n(x)| > \varepsilon) \leq 2e^{-2n\varepsilon^2}$.
+    \item[Bootstrap] Remuestreo con reemplazo para estimar la varianza de un estadístico $T_n = g(X_1,\dots,X_n)$.
+\end{description}
+
+
+\section{Pruebas de Hipótesis}\smallskip \hrule height 2pt \smallskip
+
+\begin{description}
+    \item[Nivel y Poder] Error Tipo I ($\alpha$): Rechazar $H_0$ siendo verdadera. Error Tipo II ($\beta$): No rechazar $H_0$ siendo falsa. Poder: $1 - \beta$.
+    \item[Valor-p] Probabilidad de obtener un estadístico al menos tan extremo como el observado, asumiendo $H_0$ cierta.
+    \item[Lema de Neyman-Pearson:] Para $H_0$ vs $H_1$ simples, el test de región crítica $\{\frac{L(\theta_1)}{L(\theta_0)} > k\}$ es el más potente.
+\end{description}
+
+\subsection{Pruebas Clásicas}
+\begin{description}
+    \item[Prueba de Wald] $W = \frac{\hat{\theta} - \theta_0}{\hat{\text{se}}}$. Rechazar $H_0$ si $|W| > z_{\alpha/2}$.
+    \item[Likelihood Ratio Test (LRT)] Compara el modelo bajo $H_0$ vs el general. Estadístico $\lambda = 2 \log \left(\frac{L(\hat{\theta})}{L(\hat{\theta}_0)}\right)$.
+    \item[LRT Multinomial] Para bondad de ajuste: $\lambda(X) = 2 \sum_{j=1}^k X_j \log \left( \frac{\hat{p}_j}{p_{0j}} \right) \xrightarrow{D} \chi^2_{k-1}$.
+    \item[T. de Wilks:] Bajo $H_0$ y condiciones de regularidad, $\lambda \xrightarrow{D} \chi^2_d$ donde $d$ es la diferencia de parámetros libres.
+    \item[Prueba Chi-Cuadrada de Pearson] $T = \sum_{j=1}^k \frac{(X_j - E(X_j))^2}{E(X_j)} \xrightarrow{D} \chi^2_{k-1}$. Para independencia en tablas de contingencia $I \times J$, $df = (I-1)(J-1)$.
+    \item[Prueba $t$ de Student] $T = \frac{\bar{X} - \mu_0}{s/\sqrt{n}} \xrightarrow{D} t_{n-1}$. Para dos muestras, se adapta el error estándar y grados de libertad.
+\end{description}
+
+
+\section{Inferencia Bayesiana}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Actualización Bayesiana}
+La distribución posteriori combina la información a priori con la evidencia empírica de la verosimilitud:
+\[ f(\theta | x^n) = \frac{f(x^n | \theta)f(\theta)}{\int f(x^n | \theta)f(\theta) d\theta} \propto L(\theta)f(\theta) \]
+
+\begin{center}
+    \scalebox{0.8}{
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Verosimilitud} & \textbf{Parámetro} & \textbf{Priori Conjugada} \\ \hline
+    Bernoulli / Binomial & $p$ & Beta($\alpha, \beta$) \\ \hline
+    Poisson($\lambda$) & $\lambda$ & Gamma($\alpha, \beta$) \\ \hline
+    Normal ($\sigma^2$ conocida) & $\mu$ & Normal($\mu_0, \sigma_0^2$) \\ \hline
+    Normal ($\mu$ conocida) & $\sigma^2$ & Inv-Gamma \\ \hline
+    Multinomial($\vec{p}$) & $\vec{p}$ & Dirichlet($\vec{\alpha}$) \\ \hline
+    Exponencial($\lambda$) & $\lambda$ & Gamma($\alpha, \beta$) \\ \hline
+    \end{tabular}
+    }
+\end{center}
+
+\subsection{Intervalos Creíbles y Factor de Bayes}
+\begin{description}
+    \item[Intervalo Creíble] Región $R_n$ tal que $P(\theta \in R_n | x^n) = 1 - \alpha$. HPD es la región de mayor densidad posterior.
+    \item[Factor de Bayes ($BF$)] Ratio de verosimilitudes marginales de dos hipótesis. $\frac{P(H_i | x^n)}{P(H_j | x^n)} = BF_{ij} \times \frac{P(H_i)}{P(H_j)}$.
+\end{description}
+
+
+\section{Regresión y Regularización}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Regresión Lineal Simple y Múltiple}
+Modelo: $Y = X\beta + \epsilon \quad \text{con} \quad E(\epsilon) = 0, \var(\epsilon) = \sigma^2 I$.
+\begin{description}
+    \item[Mínimos Cuadrados (OLS)] $\hat{\beta} = (X^T X)^{-1} X^T Y$.
+    \item[T. de Gauss-Markov:] En un modelo lineal con errores de media cero, incorrelacionados y homocedásticos, el estimador OLS es el BLUE. \textbf{Supuestos (LIHN):} Linealidad, Independencia, Homocedasticidad, Normalidad de errores.
+    \item[Diagnóstico de Supuestos:] \quad \\
+    No Normalidad $\implies$ Transformación de Box-Cox. \\
+    Heterocedasticidad $\implies$ Mínimos Cuadrados Ponderados (WLS). \\
+    Multicolinealidad $\implies$ Ridge Regression.
+    \item[Estimación de $\sigma^2$] $\hat{\sigma}^2 = \frac{\text{RSS}}{n-k} = \frac{1}{n-k} \sum (Y_i - \hat{Y}_i)^2$.
+    \item[Varianza del Estimador] $\var(\hat{\beta} | X) = \sigma^2 (X^T X)^{-1}$.
+    \item[R Cuadrada] $R^2 = 1 - \frac{\text{RSS}}{\text{TSS}} = 1 - \frac{\sum (Y_i - \hat{Y}_i)^2}{\sum (Y_i - \bar{Y})^2}$.
+\end{description}
+
+\subsection{Regularización y Trade-off Sesgo-Varianza}
+Evitan el sobreajuste penalizando los coeficientes $\beta$:
+\begin{description}
+    \item[Ridge ($L_2$):] $\min \|Y - X\beta\|^2 + \lambda \|\beta\|_2^2$. Reduce la varianza ante multicolinealidad.
+    \item[Lasso ($L_1$):] $\min \|Y - X\beta\|^2 + \lambda \|\beta\|_1$. Realiza selección automática de variables (encoge $\beta_i \to 0$).
+    \item[Descomposición MSE:] $MSE(\hat{\theta}) = \text{Bias}^2(\hat{\theta}) + \var(\hat{\theta}) + \sigma^2_{irr}$.
+\end{description}
+
+\subsection{Regresión Logística (GLM)}
+Para problemas de clasificación binaria, predice probabilidades empleando la función de enlace logit:
+\[ p(X) = \frac{e^{\beta_0 + \beta X}}{1 + e^{\beta_0 + \beta X}} \implies \logit(p) = \ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta X \]
+
+\subsection{Selección de Modelos}
+Penalizan la complejidad (parámetros $k$) para evitar sobreajuste.
+\begin{description}
+    \item[AIC] $AIC = 2k - 2\ell(\hat{\beta}, \hat{\sigma}^2)$
+    \item[BIC] $BIC = k\log n - 2\ell(\hat{\beta}, \hat{\sigma}^2)$
+    \item[$C_p$ de Mallow] $\hat{R}(S) = \text{RSS} + 2k\hat{\sigma}^2$
+\end{description}
+
+
+\section{Series de Tiempo}\smallskip \hrule height 2pt \smallskip
+
+\begin{description}
+    \item[Ruido Blanco] $w_t \sim wn(0, \sigma^2_w)$ tiene $E(w_t)=0, \var(w_t)=\sigma^2_w$ y $\gamma(s,t)=0$ para $s \neq t$.
+    \item[Estacionariedad Fuerte] La distribución conjunta es invariable bajo desplazamientos temporales.
+    \item[Estacionariedad Débil] Media constante y autocovarianza $\gamma(s,t)$ que solo depende del retraso $h = |s-t|$.
+    \item[ACF y PACF] La Función de Autocorrelación $\rho(h) = \frac{\gamma(h)}{\gamma(0)}$. La PACF remueve el efecto de lags intermedios.
+\end{description}
+
+\begin{description}
+    \item[Operador de Retraso (Backshift)] $B^k X_t = X_{t-k}$.
+    \item[Operador de Diferencia] $\nabla^d = (1-B)^d$.
+\end{description}
+
+\subsection{Modelos ARIMA (p, d, q)}
+\begin{description}
+    \item[AR(p) Autoregresivo] $x_t = \sum_{i=1}^p \phi_i x_{t-i} + w_t$. (ACF decae asintóticamente, PACF se corta en $p$).
+    \item[MA(q) Promedio Móvil] $x_t = w_t + \sum_{j=1}^q \theta_j w_{t-j}$. (ACF se corta en $q$, PACF decae).
+    \item[Integración (d)] Diferenciación $\nabla^d = (1-B)^d$ para remover tendencias estocásticas.
+\end{description}
+
+
+\section{Cadenas de Markov}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Definición y Propiedades}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=2.3in]{figures/chainA.pdf}
+        \end{minipage}
+Una cadena de Markov (sobre un espacio de estados discreto) garantiza la propiedad fundamental de \textbf{pérdida de memoria}: dado el estado presente, los futuros y pasados son condicionalmente independientes.
+\[P(X_{n+1} = j | X_0 \dots, X_n = i) = P(X_{n+1} = j | X_n = i)\]
+
+Estados recurrentes garantizan su retorno futuro, mientras que los transitorios poseen probabilidad estricta de abandono infinito. Los estados pueden ser periódicos o aperiódicos según el MCD de sus retornos de pasos.
+
+\subsection{Matriz de Transición y Distribución Estacionaria}
+Matriz $Q$ donde $q_{ij} = P(X_{n+1} = j | X_n = i)$. La probabilidad de transición en $m$ pasos es el elemento respectivo en $Q^m$.
+
+Una distribución PMF $\vec{s}$ es \textbf{Estacionaria} si $\vec{s}Q = \vec{s}$. Para sistemas irreducibles y aperiódicos existe una única distribución estacionaria. El tiempo esperado de retorno a un estado $i$ es $1/s_i$.
+Si $s_iq_{ij} = s_jq_{ji}$ (Ecuación de balance detallado) para todo $i,j$, el sistema posee Reversibilidad, lo cual implica inherentemente estacionariedad.
+
+\textbf{Ergodicidad:} Una cadena es ergódica si es irreducible, aperiódica y todos sus estados son recurrentes positivos. Esto garantiza la convergencia a una única distribución estacionaria.
+
+
+\section{Métodos de Muestreo (Sampling)}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Transformada Inversa] Si $U \sim \Unif(0,1)$, entonces $X = F^{-1}(U)$ tiene CDF $F$.
+    \item[Muestreo por Rechazo] Para simular $f(x)$ usando $g(x)$ tal que $f(x) \leq M g(x)$. 1. Generar $X \sim g$ y $U \sim \Unif(0,1)$. 2. Aceptar $X$ si $U \leq \frac{f(X)}{M g(X)}$.
+    \item[Muestreo por Importancia] Estima $E_f[h(X)]$ usando $g$:
+    $E_f[h(X)] = \int h(x) \frac{f(x)}{g(x)} g(x) dx = E_g[h(X) w(X)]$ donde $w(x) = f(x)/g(x)$.
+\end{description}
+
+
+\section{Teoría de Decisiones}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Función de Pérdida] $L(\theta, a)$ mide el costo de elegir acción $a$ cuando el parámetro es $\theta$. Ej: $L(\theta, \hat{\theta}) = (\theta - \hat{\theta})^2$.
+    \item[Riesgo Estadístico] $R(\theta, \delta) = E_\theta[L(\theta, \delta(X))]$.
+    \item[Riesgo de Bayes] $r(\pi, \delta) = \int R(\theta, \delta) \pi(\theta) d\theta$. La regla de Bayes minimiza el riesgo promedio.
+    \item[Regla Minimax] Minimiza el máximo riesgo posible: $\inf_\delta \sup_\theta R(\theta, \delta)$.
+\end{description}
+
+
+\section{Estadística No Paramétrica}\smallskip \hrule height 2pt \smallskip
+\begin{description}
+    \item[Kernel Density Estimation (KDE)] $\hat{f}_h(x) = \frac{1}{nh} \sum_{i=1}^n K\left(\frac{x-X_i}{h}\right)$.
+    \item[Regresión de Nadaraya-Watson] Estimador de $m(x) = E(Y|X=x)$:
+    $\hat{m}_h(x) = \frac{\sum K_h(x-X_i)Y_i}{\sum K_h(x-X_i)}$.
+\end{description}
+
+
+\section{Distribuciones Continuas}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Uniforme $\Unif(a, b)$}
+Probabilidad puramente proporcional al tamaño geométrico de la región de soporte, con una densidad plana y nula en el exterior.
+
+\subsection{Normal Gaussiana $\N(\mu, \sigma^2)$}
+Distribución simétrica de mayor presencia en la naturaleza a causa del Teorema del Límite Central. Es invariante ante transformaciones de escala y traslaciones (resultando en nuevas Gaussianas). La Normal Estándar evalúa con $Z = \frac{X-\mu}{\sigma} \sim \N(0,1)$.
+
+\subsection{Exponencial $\Expo(\lambda)$}
+Única distribución continua con la propiedad de \textbf{pérdida de memoria} (Markoviana). Expresa el tiempo de espera hasta el próximo evento en procesos de Poisson; un tiempo esperado dictado por $1/\lambda$. \\
+\textbf{Formulación analítica:} $P(X > s+t \mid X > s) = P(X > t)$.
+
+\subsection{Gamma $\Gam(a, \lambda)$}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.9in]{figures/gammapdfs.pdf}
+        \end{minipage}
+Representa el tiempo acumulado de la espera de $a$ ocurrencias independientes en un esquema Exponencial $\lambda$.
+
+\subsection{Beta $\Beta(a, b)$}
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.9in]{figures/Betapdfs.pdf}
+        \end{minipage}
+Su dominio $(0,1)$ permite modelar probabilidades y proporciones aleatorias. Es el conjugado previo clásico de la Binomial en la inferencia Bayesiana.
+
+
+\section{Distribuciones Discretas} \smallskip \hrule height 2pt \smallskip
+
+\subsection{Bernoulli $\Bern(p)$}
+Experimento aislado dual: Éxito (probabilidad $p$) y Fracaso ($1-p$).
+
+\subsection{Binomial $\Bin(n, p)$} 
+\begin{minipage}{\linewidth}
+            \centering
+\includegraphics[width=1.3in]{figures/Bin10_05.pdf}
+        \end{minipage}
+Acumula el conteo total de éxitos independientes bajo $n$ iteraciones idénticas de variables Bernoulli. Si $p$ es diminuto, aproxima a la de Poisson; si $n$ es masivo, aproxima a Gaussiana.
+
+\subsection{Geométrica $\Geom(p)$ / Binomial Negativa $\NBin(r, p)$}
+Registran iteraciones Bernoulli secuenciales. La Geométrica dictamina fracasos previos a obtener $1$ éxito. La Binomial Negativa expande el modelo contabilizando los fracasos requeridos antes de registrar $r$ éxitos en la iteración.
+
+\subsection{Hipergeométrica $\HGeom(w, b, n)$}
+Muestreos sin reemplazo. Extrae $n$ objetos aleatorios sobre un universo finito de $w$ especímenes deseados y $b$ no deseados. Carece de independencia iterativa.
+
+\subsection{Poisson $\Pois(\lambda)$}
+Agrupa flujos continuos sobre dominios discretos. Usado típicamente para eventos extremadamente atípicos operando a escalas o volúmenes temporalmente grandes con una tasa esperada estricta.
+
+
+\section{Distribuciones Multivariadas} \smallskip \hrule height 2pt \smallskip
+
+\subsection{Multinomial $\Mult_k(n, \vec{p})$}
+Generalización de Binomial a vectores de $k$ categorías independientes. Marginalmente colapsan de nuevo a la versión Binomial.
+PMF Conjunta: 
+\[P(\vec{X} = \vec{n}) =  \frac{n!}{\prod_{i=1}^k n_i!} \prod_{i=1}^k p_i^{n_i}\]
+
+\subsection{Normal Multivariada}
+Extensión métrica del comportamiento Gaussiano en $k$-dimensiones algebraicas. Posee la propiedad clave de que vectores sin correlación equivalen firmemente a su independencia escalar subyacente. Su función de densidad con vector de medias $\boldsymbol{\mu}$ y matriz de covarianza $\boldsymbol{\Sigma}$ es:
+\[ f(\mathbf{x}) = \frac{1}{\sqrt{(2\pi)^k |\boldsymbol{\Sigma}|}} \exp\left(-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{x}-\boldsymbol{\mu})\right) \]
+\textbf{Normal Bivariada Condicional:} Para $(X_1, X_2) \sim \N$, el valor esperado condicional de $X_1$ dado $X_2 = x_2$ es:
+\[ E(X_1 | X_2=x_2) = \mu_1 + \rho \frac{\sigma_1}{\sigma_2}(x_2 - \mu_2) \]
+\[ \var(X_1 | X_2=x_2) = \sigma_1^2(1 - \rho^2) \]
+
+\subsection{Dirichlet $\text{Dir}(\vec{\alpha})$}
+Priori conjugada de la Multinomial. Modela distribuciones de probabilidad sobre el símplex estándar. Densidad proporcional a $\prod_{i=1}^k x_i^{\alpha_i - 1}$.
+
+
+\section{Propiedades Esenciales} \smallskip \hrule height 2pt \smallskip
+
+\subsection{Convoluciones Lineales Elementales}
+Mantenido sobre el axioma de variables $X$ e $Y$ independientes:
+\begin{enumerate}
+    \item $X \sim \Pois(\lambda_1), Y \sim \Pois(\lambda_2) \implies X + Y \sim \Pois(\lambda_1 + \lambda_2)$
+    \item $X \sim \Bin(n_1, p), Y \sim \Bin(n_2, p) \implies X + Y \sim \Bin(n_1 + n_2, p)$
+    \item $X \sim \Gam(a_1, \lambda), Y \sim \Gam(a_2, \lambda) \implies X + Y \sim \Gam(a_1 + a_2, \lambda)$
+    \item $X \sim \N(\mu_1, \sigma_1^2), Y \sim \N(\mu_2, \sigma_2^2) \implies X+Y \sim \N(\mu_1+\mu_2, \sigma_1^2+\sigma_2^2)$
+    \item \textbf{Teorema del Banco (Relación Beta-Gamma):} $X \sim \Gam(a, \lambda), Y \sim \Gam(b, \lambda) \implies \frac{X}{X+Y} \sim \Beta(a, b)$, donde $(X+Y) \independent \frac{X}{X+Y}$.
+\end{enumerate}
+
+\subsection{Desigualdades Analíticas}
+\begin{enumerate}
+\item \textbf{Cauchy-Schwarz} $|E(XY)| \leq \sqrt{E(X^2)E(Y^2)}$
+\item \textbf{Markov} $P(|X| \geq a) \leq \frac{E|X|}{a}$
+\item \textbf{Chebyshev} $P(|X - \mu| \geq a) \leq \frac{\sigma^2}{a^2}$
+\item \textbf{Jensen} $E(g(X)) \geq g(E(X))$ con $g$ convexa.
+\end{enumerate}
+
+\subsection{Entropía e Información}
+\begin{description}
+    \item[Entropía de Shannon] $H(X) = - \sum_x p(x) \log_2 p(x)$. Cuantifica la incertidumbre promedio.
+    \item[Divergencia KL] $D_{KL}(P || Q) = \sum_x P(x) \log_2\left(\frac{P(x)}{Q(x)}\right)$. Mide la pérdida de información al aproximar $P$ usando $Q$.
+    \item[Información Mutua] $I(X; Y) = H(X) - H(X|Y)$
+    \item[Entropía Cruzada] $H(P, Q) = -\sum P(x) \log Q(x)$
+\end{description}
+
+
+\section{Fórmulas Básicas} \smallskip \hrule height 2pt \smallskip
+\subsection{Series Lineales y Series de Taylor}
+Geométrica (Finita e Infinita): $\sum_{k=0}^{n-1} r^k = \frac{1 - r^n}{1 -r}$ e infinidad asintótica para $|r|<1$ como $\frac{1}{1-r}$. \\
+Exponencial Natural: $e^x = \sum_{n=0}^\infty \frac{x^n}{n!} = \lim_{n \rightarrow \infty} \left( 1 + \frac{x}{n} \right)^n$
+
+\subsection{Funciones Especiales}
+\textbf{Función Gamma:} $\Gamma(t) = \int_0^\infty x^{t-1}e^{-x} dx$. Propiedades: $\Gamma(t+1)=t\Gamma(t)$, $\Gamma(n)=(n-1)!$ para $n \in \mathbb{N}$ y $\Gamma(1/2)=\sqrt{\pi}$. \\
+\textbf{Función Beta:} $B(x,y) = \int_0^1 t^{x-1}(1-t)^{y-1} dt = \frac{\Gamma(x)\Gamma(y)}{\Gamma(x+y)}$.
+
+\subsection{Aproximación de Stirling}
+\textbf{Fórmula de Stirling:} $n! \approx \sqrt{2\pi n}(n/e)^n$.
+
+\subsection{Familia Exponencial}
+Una distribución pertenece a la familia exponencial si su densidad se escribe como:
+\[ f(x|\theta) = h(x) \exp\left( \eta(\theta) \cdot T(x) - A(\theta) \right) \]
+Donde $T(x)$ es el estadístico suficiente, $\eta(\theta)$ el parámetro natural y $A(\theta)$ la función log-partición.
+
+\subsection{F. Generadora de Probabilidad (PGF)}
+Para V.A. discretas no negativas $X$:
+\[ G_X(z) = E(z^X) = \sum_{k=0}^\infty p_k z^k \]
+Momentos factoriales: $E[X(X-1)\dots(X-k+1)] = G^{(k)}_X(1)$.
+
+
+\section{Comandos R Estadísticos} \smallskip \hrule height 2pt \smallskip
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Prefijo} & \textbf{Acción} \\
+\hline
+\texttt{d\dots(x)} & Densidad o Masa (PDF/PMF)\\
+\texttt{p\dots(q)} & Área bajo la curva (CDF)\\
+\texttt{q\dots(p)} & Quantiles y cortes de probabilidad\\
+\texttt{r\dots(n)} & Generador Pseudo-Aleatorio (i.i.d)\\
+\hline
+\end{tabular}
+\end{center}
+Reemplace \texttt{\dots} con norm, binom, pois, exp, etc.
+
+\section{Contenido complementario}\smallskip \hrule height 2pt \smallskip
+
+\subsection{Errores Comunes y Notas de Soporte}
+\begin{description}
+    \item[P-hacking] Ajustar $\alpha$ ante múltiples pruebas (Corrección de Bonferroni: $\alpha_{adj} = \alpha/n$).
+    \item[Interpretación IC] Frecuentista: El intervalo es aleatorio y el parámetro fijo. Bayesiano: El parámetro es aleatorio (Intervalo Creíble).
+    \item[Falacia del Valor Esperado] $E(g(X)) \neq g(E(X))$ a menos que $g$ sea lineal (Jensen determina la dirección de la desigualdad).
+    \item[Independencia vs. Correlación] $\corr(X,Y)=0 \centernot\implies X \independent Y$. La incorrelación solo mide relación lineal.
+    \item[Condicionamiento] $P(A|B) \neq P(B|A)$ (Falacia del fiscal).
+    \item[Soporte de VA] Verificar si el soporte depende de parámetros (ej. $\Unif(0, \theta)$); esto invalida condiciones de regularidad.
+    \item[Cauchy:] No posee media ni varianza definidas. Proporción de dos Normales estándar independientes ($Z_1/Z_2$).
+    \item[Falta de Memoria:] Única en Expo (cont.) y Geom (disc.).
+\end{description}
+
+\subsection{Génesis de Distribuciones (Estructural)}
+\begin{itemize}
+    \item $\chi^2_n$: Suma de $n$ Gaussianas estándar al cuadrado $\sum_{i=1}^n Z_i^2$.
+    \item $t_n$: Cociente $Z / \sqrt{V/n}$ con $V \sim \chi^2_n$.
+    \item $F_{d_1, d_2}$: Cociente de dos Chi-cuadradas normalizadas $(U/d_1) / (V/d_2)$.
+\end{itemize}
+
+\subsection{Muestreo MCMC (Metropolis-Hastings)}
+Regla de aceptación para generar muestras de $P(x)$ complejo:
+\[ \alpha(x \to x') = \min\left(1, \frac{P(x')Q(x|x')}{P(x)Q(x'|x)}\right) \]
+
+\subsection{Aproximaciones Asintóticas}
+\begin{center}
+\scalebox{0.85}{
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Origen} & \textbf{Límite} & \textbf{Condición} \\ \hline
+$\Bin(n, p)$ & $\Pois(\lambda = np)$ & $n \to \infty, p \to 0$ \\ \hline
+$\Bin(n, p)$ & $\N(np, npq)$ & $np > 5, nq > 5$ \\ \hline
+$\Pois(\lambda)$ & $\N(\lambda, \lambda)$ & $\lambda > 20$ \\ \hline
+$\HGeom$ & $\Bin(n, \frac{w}{w+b})$ & $w+b \gg n$ \\ \hline
+$t_n$ & $\N(0, 1)$ & $n \to \infty$ \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\subsection{Evidencia del Valor-p (Criterio de Fisher)}
+\begin{center}
+\scalebox{0.85}{
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Valor-p} & \textbf{Evidencia contra $H_0$} \\ \hline
+$p > 0.10$ & No hay evidencia significativa \\ \hline
+$0.05 < p \leq 0.10$ & Evidencia marginal (débil) \\ \hline
+$0.01 < p \leq 0.05$ & Evidencia moderada \\ \hline
+$p \leq 0.01$ & Evidencia muy fuerte \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\subsection{Adiciones Sugeridas de Inferencia y Varianza}
+\begin{description}
+    \item[Guía de Decisión Estocástica:] \quad \\
+    $\sigma$ conocida $\implies Z$ (Normal). \\
+    $\sigma$ descon. ($n<30$) $\implies t$ (Student). \\
+    Comp. Varianzas $\implies F$ (Fisher). \\
+    Indep./Ajuste $\implies \chi^2$ (Chi-cuadrada).
+    \item[Relaciones Útiles:] \quad \\
+    $\Bin(1, p) \equiv \Bern(p)$. \\
+    $\Gam(1, \lambda) \equiv \Expo(\lambda)$. \\
+    $\Gam(n/2, 1/2) \equiv \chi^2_n$.
+    \item[Varianza de la Resta:] \quad \\
+    $\var(aX - bY) = a^2\var(X) + b^2\var(Y) - 2ab\cov(X, Y)$.
+    \item[FCPF (Muestreo s.r.):] factor de corrección para población finita: $\sqrt{\frac{N-n}{N-1}}$.
+    \item[Interpretación Beta Bayes:] En $\Beta(\alpha, \beta)$, $\alpha-1$ son éxitos previos y $\beta-1$ son fracasos previos.
+\end{description}
+
+\subsection{Identidades Matriciales Útiles}
+En el contexto de la Normal Multivariada $\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$:
+\begin{enumerate}
+    \item $(\mathbf{X}-\boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{X}-\boldsymbol{\mu}) \sim \chi^2_k$.
+    \item $\var(\mathbf{AX+b}) = \mathbf{A} \boldsymbol{\Sigma} \mathbf{A}^T$.
+    \item Si $\boldsymbol{\Sigma}$ es diagonal $\implies$ componentes independientes.
+\end{enumerate}
+
+\subsection{Inferencia y Métodos Avanzados}
+\textbf{Cota de Cramér-Rao:} $\var(\hat{\theta}) \geq \frac{1}{nI(\theta)}$ para insesgados. \\
+\textbf{T. de Wilks:} Bajo $H_0$, el estadístico de razón de verosimilitud $\lambda \xrightarrow{D} \chi^2_d$. \\
+\textbf{Bayes Kernel:} Posterior $\propto$ Verosimilitud $\times$ Prior. \\
+\textbf{Método Delta Multi:} Si $\sqrt{n}(\hat{\theta}_n - \theta) \xrightarrow{D} \N(0, \Sigma)$:
+\[ \sqrt{n}(g(\hat{\theta}_n) - g(\theta)) \xrightarrow{D} \N(0, \nabla g(\theta)^T \Sigma \nabla g(\theta)) \]
+
+\subsection{Jerarquía de Convergencia}
+\begin{center}
+\begin{tikzpicture}[node distance=1.2cm, >=stealth]
+    \node (L2) {$L_2$};
+    \node (P) [right=of L2] {$P$};
+    \node (D) [right=of P] {$D$};
+    \node (AS) [above=0.6cm of P] {$a.s.$};
+    \draw[->, thick] (L2) -- (P);
+    \draw[->, thick] (P) -- (D);
+    \draw[->, thick] (AS) -- (P);
+\end{tikzpicture}
+\end{center}
+
+\end{multicols*}
+
+\vspace{-1.5cm}
+\section{Tabla de Distribuciones}
+\vspace{0.5cm} 
+
+\begin{center}
+\small 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Distribución} & \textbf{PMF/PDF y Dominio (Soporte)} & \textbf{Esperanza} & \textbf{Varianza} & \textbf{MGF} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Bernoulli\\ $Bern(p)$\end{tabular} & $P(X=1)=p, P(X=0)=q=1-p$ & $p$ & $pq$ & $q+pe^t$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Binomial\\ $Bin(n, p)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=\binom{n}{k}p^k q^{n-k}$\\ $k \in \{0, 1, \dots, n\}$\end{tabular} & $np$ & $npq$ & $(q+pe^t)^n$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Geométrica\\ $Geom(p)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=q^k p$ (fallos)\\ $k \in \{0, 1, \dots\}$\end{tabular} & $q/p$ & $q/p^2$ & $\frac{p}{1-qe^t}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Binomial Negativa\\ $NBin(r, p)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=n)=\binom{n+r-1}{n}p^r q^n$\\ $n \in \{0, 1, \dots\}$\end{tabular} & $rq/p$ & $rq/p^2$ & $(\frac{p}{1-qe^t})^r$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Hipergeométrica\\ $HGeom(w, b, n)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=\frac{\binom{w}{k}\binom{b}{n-k}}{\binom{w+b}{n}}$\\ $k \in \{0, 1, \dots, n\}$\end{tabular} & $\frac{nw}{w+b}$ & $n\frac{w}{w+b}\frac{b}{w+b}\frac{w+b-n}{w+b-1}$ & Intratable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Poisson\\ $Pois(\lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}$\\ $k \in \{0, 1, \dots\}$\end{tabular} & $\lambda$ & $\lambda$ & $e^{\lambda(e^t-1)}$ \\ \hline
+\hline
+\begin{tabular}[c]{@{}c@{}}Uniforme\\ $Unif(a, b)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{b-a}$\\ $x \in (a, b)$\end{tabular} & $\frac{a+b}{2}$ & $\frac{(b-a)^2}{12}$ & $\frac{e^{tb}-e^{ta}}{t(b-a)}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Normal\\ $N(\mu, \sigma^2)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-(x-\mu)^2/(2\sigma^2)}$\\ $x \in (-\infty, \infty)$\end{tabular} & $\mu$ & $\sigma^2$ & $e^{\mu t + \frac{\sigma^2 t^2}{2}}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Exponencial\\ $Expo(\lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\lambda e^{-\lambda x}$\\ $x \in [0, \infty)$\end{tabular} & $\frac{1}{\lambda}$ & $\frac{1}{\lambda^2}$ & $\frac{\lambda}{\lambda-t}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Gamma\\ $Gamma(\alpha, \lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{\lambda^\alpha x^{\alpha-1}e^{-\lambda x}}{\Gamma(\alpha)}$\\ $x \in [0, \infty)$\end{tabular} & $\frac{\alpha}{\lambda}$ & $\frac{\alpha}{\lambda^2}$ & $(\frac{\lambda}{\lambda-t})^\alpha$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Beta\\ $Beta(a, b)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1}$\\ $x \in (0, 1)$\end{tabular} & $\frac{a}{a+b}$ & $\frac{ab}{(a+b)^2(a+b+1)}$ & Intratable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Log Normal\\ $LN(\mu, \sigma^2)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{x\sigma\sqrt{2\pi}}e^{-\frac{(\ln x - \mu)^2}{2\sigma^2}}$\\ $x > 0$\end{tabular} & $e^{\mu+\sigma^2/2}$ & $(e^{\sigma^2}-1)e^{2\mu+\sigma^2}$ & No existe \\ \hline
+\begin{tabular}[c]{@{}c@{}}Weibull\\ $W(k, \lambda)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{k}{\lambda}(\frac{x}{\lambda})^{k-1}e^{-(x/\lambda)^k}$\\ $x \geq 0$\end{tabular} & $\lambda\Gamma(1+1/k)$ & $\lambda^2[\Gamma(1+2/k)-\Gamma^2(1+1/k)]$ & Ver Stirling \\ \hline
+\begin{tabular}[c]{@{}c@{}}Pareto\\ $Pa(x_m, \alpha)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{\alpha x_m^\alpha}{x^{\alpha+1}}$\\ $x \geq x_m$\end{tabular} & $\frac{\alpha x_m}{\alpha-1} (\alpha > 1)$ & $\frac{x_m^2 \alpha}{(\alpha-1)^2(\alpha-2)} (\alpha > 2)$ & No existe \\ \hline
+\begin{tabular}[c]{@{}c@{}}Laplace\\ $L(\mu, b)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{2b}e^{-\frac{|x-\mu|}{b}}$\\ $x \in (-\infty, \infty)$\end{tabular} & $\mu$ & $2b^2$ & $\frac{e^{\mu t}}{1-b^2t^2} (|t| < 1/b)$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}Chi-Cuadrada\\ $\chi^2_n$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\frac{1}{2^{n/2}\Gamma(n/2)}x^{n/2-1}e^{-x/2}$\\ $x \in (0, \infty)$\end{tabular} & $n$ & $2n$ & $(1-2t)^{-n/2}$ \\ \hline
+\begin{tabular}[c]{@{}c@{}}t de Student\\ $t_\nu$\end{tabular} & $f(x) \propto (1+\frac{x^2}{\nu})^{-\frac{\nu+1}{2}}$ & $0 (\nu > 1)$ & $\frac{\nu}{\nu-2} (\nu > 2)$ & Intratable \\ \hline
+\begin{tabular}[c]{@{}c@{}}F de Fisher\\ $F_{d_1, d_2}$\end{tabular} & $f(x) \propto \frac{\sqrt{\frac{(d_1 x)^{d_1} d_2^{d_2}}{(d_1 x + d_2)^{d_1+d_2}}}}{x B(\frac{d_1}{2}, \frac{d_2}{2})}$ & $\frac{d_2}{d_2-2}$ & $\frac{2d_2^2(d_1+d_2-2)}{d_1(d_2-2)^2(d_2-4)}$ & Intratable \\ \hline
+\begin{tabular}[c]{@{}c@{}}Cauchy\\ $Cauchy(x_0, \gamma)$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$f(x)=\frac{1}{\pi\gamma [1+(\frac{x-x_0}{\gamma})^2]}$\\ $x \in (-\infty, \infty)$\end{tabular} & Indefinida & Indefinida & Indefinida \\ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\begin{sidewaysfigure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/relationships.pdf}
+\end{sidewaysfigure}
+
+\end{document}
